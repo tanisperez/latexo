@@ -1,0 +1,27 @@
+# The fans area. Glossary and rules: docs/i18n.md
+_version: 2
+"fans.fan":
+  en: "Fan %{number}"
+  es: "Ventilador %{number}"
+  gl: "Ventilador %{number}"
+  it: "Ventola %{number}"
+"fans.none":
+  en: "No fan found"
+  es: "No se ha encontrado ningún ventilador"
+  gl: "Non se atopou ningún ventilador"
+  it: "Nessuna ventola trovata"
+"fans.none_linux":
+  en: "Linux shows the fans its drivers know (hwmon). A laptop or a board without a fan driver shows none."
+  es: "Linux muestra los ventiladores que conocen sus controladores (hwmon). Un portátil o una placa sin controlador de ventiladores no muestra ninguno."
+  gl: "Linux amosa os ventiladores que coñecen os seus controladores (hwmon). Un portátil ou unha placa sen controlador de ventiladores non amosa ningún."
+  it: "Linux mostra le ventole che i suoi driver conoscono (hwmon). Un portatile o una scheda madre senza driver delle ventole non ne mostra nessuna."
+"fans.none_windows":
+  en: "Windows does not report fan speeds without a driver from the board maker."
+  es: "Windows no informa de la velocidad de los ventiladores sin un controlador del fabricante de la placa."
+  gl: "Windows non informa da velocidade dos ventiladores sen un controlador do fabricante da placa."
+  it: "Windows non comunica la velocità delle ventole senza un driver del produttore della scheda madre."
+"fans.read_only":
+  en: "Latexo reads the fans. Changing their speed needs the control tool of your board."
+  es: "Latexo lee los ventiladores. Cambiar su velocidad necesita la herramienta de control de tu placa."
+  gl: "Latexo le os ventiladores. Cambiar a súa velocidade precisa a ferramenta de control da túa placa."
+  it: "Latexo legge le ventole. Cambiarne la velocità richiede lo strumento di controllo della tua scheda madre."

@@ -21,13 +21,12 @@ telaio-app = { git = "https://github.com/tanisperez/telaio", tag = "v0.32.0" }
 telaio-update = { git = "https://github.com/tanisperez/telaio", tag = "v0.32.0" }
 serde = "1"
 serde_json = "1"
-thiserror = "2"
-anyhow = "1"
 pretty_assertions = "1.4"
 tempfile = "3"
-dirs = "7"
 toml = "1"
 log = "0.4"
+# Local dates for the energy account; the version gpui already builds.
+chrono = "0.4.45"
 # Already built by gpui-component (translations); same version.
 rust-i18n = "4.2"
 # CPU, memory, disks, networks, processes and the temperature sensors, on Linux and Windows.

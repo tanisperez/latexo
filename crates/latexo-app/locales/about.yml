@@ -1,0 +1,72 @@
+# The about area. Glossary and rules: docs/i18n.md
+_version: 2
+"about.machine":
+  en: "This computer"
+  es: "Este equipo"
+  gl: "Este equipo"
+  it: "Questo computer"
+"about.host":
+  en: "Name"
+  es: "Nombre"
+  gl: "Nome"
+  it: "Nome"
+"about.os":
+  en: "System"
+  es: "Sistema"
+  gl: "Sistema"
+  it: "Sistema"
+"about.kernel":
+  en: "Kernel"
+  es: "Núcleo del sistema"
+  gl: "Núcleo do sistema"
+  it: "Kernel"
+"about.cpu":
+  en: "Processor"
+  es: "Procesador"
+  gl: "Procesador"
+  it: "Processore"
+"about.cores":
+  en: "Cores"
+  es: "Núcleos"
+  gl: "Núcleos"
+  it: "Core"
+"about.cores_value":
+  en: "%{cores} cores · %{threads} threads"
+  es: "%{cores} núcleos · %{threads} hilos"
+  gl: "%{cores} núcleos · %{threads} fíos"
+  it: "%{cores} core · %{threads} thread"
+"about.memory":
+  en: "Memory"
+  es: "Memoria"
+  gl: "Memoria"
+  it: "Memoria"
+"about.files":
+  en: "Files Latexo writes"
+  es: "Archivos que escribe Latexo"
+  gl: "Ficheiros que escribe Latexo"
+  it: "File che Latexo scrive"
+"about.settings_file":
+  en: "Settings"
+  es: "Ajustes"
+  gl: "Axustes"
+  it: "Impostazioni"
+"about.energy_file":
+  en: "Energy account"
+  es: "Cuenta de energía"
+  gl: "Conta de enerxía"
+  it: "Conteggio energia"
+"about.log_file":
+  en: "Log"
+  es: "Registro"
+  gl: "Rexistro"
+  it: "Log"
+"about.privacy_title":
+  en: "Privacy"
+  es: "Privacidad"
+  gl: "Privacidade"
+  it: "Privacy"
+"about.privacy":
+  en: "Latexo reads this computer and keeps everything on it. On its own it only connects to GitHub, to look for a new version, and only in builds with the updater."
+  es: "Latexo lee este equipo y lo guarda todo en él. Por su cuenta solo se conecta a GitHub para buscar una versión nueva, y solo en las compilaciones con el actualizador."
+  gl: "Latexo le este equipo e gárdao todo nel. Pola súa conta só se conecta a GitHub para buscar unha versión nova, e só nas compilacións co actualizador."
+  it: "Latexo legge questo computer e conserva tutto su di esso. Da solo si collega solo a GitHub, per cercare una nuova versione, e solo nelle build con l'aggiornamento."

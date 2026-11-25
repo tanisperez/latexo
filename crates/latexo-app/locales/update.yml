@@ -1,0 +1,77 @@
+# The update area. Glossary and rules: docs/i18n.md
+_version: 2
+"update.check_at_startup":
+  en: "Look for updates at startup"
+  es: "Buscar actualizaciones al arrancar"
+  gl: "Buscar actualizacións ao arrancar"
+  it: "Cerca aggiornamenti all'avvio"
+"update.check_now":
+  en: "Check now"
+  es: "Comprobar ahora"
+  gl: "Comprobar agora"
+  it: "Controlla ora"
+"update.unavailable":
+  en: "This copy updates with its package manager."
+  es: "Esta copia se actualiza con su gestor de paquetes."
+  gl: "Esta copia actualízase co seu xestor de paquetes."
+  it: "Questa copia si aggiorna con il suo gestore di pacchetti."
+"update.already_ready":
+  en: "Latexo %{version} is ready: restart from the side bar."
+  es: "Latexo %{version} está listo: reinicia desde la barra lateral."
+  gl: "Latexo %{version} está listo: reinicia desde a barra lateral."
+  it: "Latexo %{version} è pronto: riavvia dalla barra laterale."
+"update.checking":
+  en: "Looking for updates…"
+  es: "Buscando actualizaciones…"
+  gl: "Buscando actualizacións…"
+  it: "Ricerca aggiornamenti…"
+"update.up_to_date":
+  en: "Latexo %{version} is the latest version."
+  es: "Latexo %{version} es la última versión."
+  gl: "Latexo %{version} é a última versión."
+  it: "Latexo %{version} è l'ultima versione."
+"update.found":
+  en: "Latexo %{version} is ready: restart from the side bar."
+  es: "Latexo %{version} está listo: reinicia desde la barra lateral."
+  gl: "Latexo %{version} está listo: reinicia desde a barra lateral."
+  it: "Latexo %{version} è pronto: riavvia dalla barra laterale."
+"update.check_failed":
+  en: "Could not look for updates: %{error}"
+  es: "No se han podido buscar actualizaciones: %{error}"
+  gl: "Non se puideron buscar actualizacións: %{error}"
+  it: "Impossibile cercare aggiornamenti: %{error}"
+"update.available_manual":
+  en: "Latexo %{version} is out: download it from the release page."
+  es: "Ha salido Latexo %{version}: descárgalo desde la página de la versión."
+  gl: "Saíu Latexo %{version}: descárgao desde a páxina da versión."
+  it: "È uscito Latexo %{version}: scaricalo dalla pagina della versione."
+"update.available_linux":
+  en: "Latexo %{version} is out: download it from the release page."
+  es: "Ha salido Latexo %{version}: descárgalo desde la página de la versión."
+  gl: "Saíu Latexo %{version}: descárgao desde a páxina da versión."
+  it: "È uscito Latexo %{version}: scaricalo dalla pagina della versione."
+"update.available_script":
+  en: "Latexo %{version} is out: run the install script again."
+  es: "Ha salido Latexo %{version}: vuelve a ejecutar el script de instalación."
+  gl: "Saíu Latexo %{version}: volve executar o script de instalación."
+  it: "È uscito Latexo %{version}: esegui di nuovo lo script di installazione."
+"update.available_short":
+  en: "Latexo %{version} is out"
+  es: "Ha salido Latexo %{version}"
+  gl: "Saíu Latexo %{version}"
+  it: "È uscito Latexo %{version}"
+"update.ready_short":
+  en: "Update to %{version}, restart"
+  es: "Actualizar a %{version}, reiniciar"
+  gl: "Actualizar a %{version}, reiniciar"
+  it: "Aggiorna a %{version}, riavvia"
+"update.fallback":
+  en: "The update cannot be installed here: its page is open in the browser."
+  es: "La actualización no se puede instalar aquí: su página está abierta en el navegador."
+  gl: "A actualización non se pode instalar aquí: a súa páxina está aberta no navegador."
+  it: "L'aggiornamento non si può installare qui: la sua pagina è aperta nel browser."
+"update.install_failed":
+  en: "Could not install the update: %{error}"
+  es: "No se ha podido instalar la actualización: %{error}"
+  gl: "Non se puido instalar a actualización: %{error}"
+  it: "Impossibile installare l'aggiornamento: %{error}"

@@ -1,0 +1,32 @@
+# Strings shared by several areas. Glossary and rules: docs/i18n.md
+_version: 2
+"common.reading":
+  en: "Reading the machine…"
+  es: "Leyendo el equipo…"
+  gl: "Lendo o equipo…"
+  it: "Lettura del computer…"
+"common.not_available":
+  en: "Not available"
+  es: "No disponible"
+  gl: "Non dispoñible"
+  it: "Non disponibile"
+"common.nothing_found":
+  en: "Nothing to show"
+  es: "Nada que mostrar"
+  gl: "Nada que amosar"
+  it: "Niente da mostrare"
+"common.details":
+  en: "Details"
+  es: "Detalles"
+  gl: "Detalles"
+  it: "Dettagli"
+"common.dash":
+  en: "n/a"
+  es: "n/d"
+  gl: "n/d"
+  it: "n/d"
+"common.of":
+  en: "%{used} of %{total}"
+  es: "%{used} de %{total}"
+  gl: "%{used} de %{total}"
+  it: "%{used} di %{total}"

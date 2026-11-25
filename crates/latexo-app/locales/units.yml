@@ -1,0 +1,27 @@
+# The units area. Glossary and rules: docs/i18n.md
+_version: 2
+"units.percent":
+  en: "%{value}%"
+  es: "%{value} %"
+  gl: "%{value} %"
+  it: "%{value}%"
+"units.per_second":
+  en: "%{value}/s"
+  es: "%{value}/s"
+  gl: "%{value}/s"
+  it: "%{value}/s"
+"units.days_hours":
+  en: "%{days} d %{hours} h"
+  es: "%{days} d %{hours} h"
+  gl: "%{days} d %{hours} h"
+  it: "%{days} g %{hours} h"
+"units.hours_minutes":
+  en: "%{hours} h %{minutes} min"
+  es: "%{hours} h %{minutes} min"
+  gl: "%{hours} h %{minutes} min"
+  it: "%{hours} h %{minutes} min"
+"units.minutes":
+  en: "%{minutes} min"
+  es: "%{minutes} min"
+  gl: "%{minutes} min"
+  it: "%{minutes} min"

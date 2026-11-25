@@ -1,0 +1,202 @@
+# The settings area. Glossary and rules: docs/i18n.md
+_version: 2
+"settings.sampling":
+  en: "Sampling"
+  es: "Muestreo"
+  gl: "Mostraxe"
+  it: "Campionamento"
+"settings.interval":
+  en: "Sampling interval"
+  es: "Intervalo de muestreo"
+  gl: "Intervalo de mostraxe"
+  it: "Intervallo di campionamento"
+"settings.interval_description":
+  en: "Less time, more CPU"
+  es: "Menos tiempo, más gasto de CPU"
+  gl: "Menos tempo, máis gasto de CPU"
+  it: "Meno tempo, più CPU"
+"settings.appearance":
+  en: "Appearance"
+  es: "Apariencia"
+  gl: "Aparencia"
+  it: "Aspetto"
+"settings.theme":
+  en: "Theme"
+  es: "Tema"
+  gl: "Tema"
+  it: "Tema"
+"settings.theme_system":
+  en: "System"
+  es: "Sistema"
+  gl: "Sistema"
+  it: "Sistema"
+"settings.theme_light":
+  en: "Light"
+  es: "Claro"
+  gl: "Claro"
+  it: "Chiaro"
+"settings.theme_dark":
+  en: "Dark"
+  es: "Oscuro"
+  gl: "Escuro"
+  it: "Scuro"
+"settings.language":
+  en: "Language"
+  es: "Idioma"
+  gl: "Idioma"
+  it: "Lingua"
+"settings.language_auto":
+  en: "Auto"
+  es: "Auto"
+  gl: "Auto"
+  it: "Auto"
+"settings.chart_style":
+  en: "Chart style"
+  es: "Estilo de gráfica"
+  gl: "Estilo de gráfica"
+  it: "Stile dei grafici"
+"settings.temperature":
+  en: "Temperature"
+  es: "Temperatura"
+  gl: "Temperatura"
+  it: "Temperatura"
+"settings.energy":
+  en: "Energy"
+  es: "Energía"
+  gl: "Enerxía"
+  it: "Energia"
+"settings.price":
+  en: "Price of a kWh"
+  es: "Precio del kWh"
+  gl: "Prezo do kWh"
+  it: "Prezzo del kWh"
+"settings.price_description":
+  en: "To work out the cost"
+  es: "Para calcular el coste"
+  gl: "Para calcular o custo"
+  it: "Per calcolare il costo"
+"settings.startup":
+  en: "Startup"
+  es: "Arranque"
+  gl: "Arranque"
+  it: "Avvio"
+"settings.start_with_windows":
+  en: "Start with Windows"
+  es: "Iniciar con Windows"
+  gl: "Iniciar con Windows"
+  it: "Avvia con Windows"
+"settings.start_with_session":
+  en: "Start when I log in"
+  es: "Iniciar al entrar en la sesión"
+  gl: "Iniciar ao entrar na sesión"
+  it: "Avvia all'accesso"
+"settings.startup_failed":
+  en: "Could not change the start: %{error}"
+  es: "No se ha podido cambiar el arranque: %{error}"
+  gl: "Non se puido cambiar o arranque: %{error}"
+  it: "Impossibile cambiare l'avvio: %{error}"
+"settings.sensors":
+  en: "Sensors and permissions"
+  es: "Sensores y permisos"
+  gl: "Sensores e permisos"
+  it: "Sensori e permessi"
+"settings.sensor_temperatures":
+  en: "Temperatures"
+  es: "Temperaturas"
+  gl: "Temperaturas"
+  it: "Temperature"
+"settings.sensor_fans":
+  en: "Fans"
+  es: "Ventiladores"
+  gl: "Ventiladores"
+  it: "Ventole"
+"settings.sensor_cpu_power":
+  en: "CPU power"
+  es: "Consumo de la CPU"
+  gl: "Consumo da CPU"
+  it: "Potenza della CPU"
+"settings.sensor_gpu":
+  en: "GPU usage"
+  es: "Uso de la GPU"
+  gl: "Uso da GPU"
+  it: "Uso della GPU"
+"settings.sensor_battery":
+  en: "Battery"
+  es: "Batería"
+  gl: "Batería"
+  it: "Batteria"
+"settings.available":
+  en: "Available"
+  es: "Disponible"
+  gl: "Dispoñible"
+  it: "Disponibile"
+"settings.not_available":
+  en: "Not available"
+  es: "No disponible"
+  gl: "Non dispoñible"
+  it: "Non disponibile"
+"settings.needs_admin":
+  en: "Needs administrator"
+  es: "Necesita administrador"
+  gl: "Precisa administrador"
+  it: "Richiede amministratore"
+"settings.data":
+  en: "Data"
+  es: "Datos"
+  gl: "Datos"
+  it: "Dati"
+"settings.export":
+  en: "Export"
+  es: "Exportar"
+  gl: "Exportar"
+  it: "Esporta"
+"settings.export_label":
+  en: "Export history"
+  es: "Exportar historial"
+  gl: "Exportar historial"
+  it: "Esporta cronologia"
+"settings.export_description":
+  en: "CSV file with every series of the last hour"
+  es: "Archivo CSV con todas las series de la última hora"
+  gl: "Ficheiro CSV con todas as series da última hora"
+  it: "File CSV con tutte le serie dell'ultima ora"
+"settings.exported":
+  en: "History saved to %{path}"
+  es: "Historial guardado en %{path}"
+  gl: "Historial gardado en %{path}"
+  it: "Cronologia salvata in %{path}"
+"settings.export_failed":
+  en: "Could not save the history: %{error}"
+  es: "No se ha podido guardar el historial: %{error}"
+  gl: "Non se puido gardar o historial: %{error}"
+  it: "Impossibile salvare la cronologia: %{error}"
+"settings.clear":
+  en: "Clear"
+  es: "Borrar"
+  gl: "Borrar"
+  it: "Cancella"
+"settings.clear_label":
+  en: "Clear history"
+  es: "Borrar historial"
+  gl: "Borrar historial"
+  it: "Cancella cronologia"
+"settings.clear_description":
+  en: "The charts start again from now"
+  es: "Las gráficas empiezan de nuevo desde ahora"
+  gl: "As gráficas comezan de novo desde agora"
+  it: "I grafici ricominciano da adesso"
+"settings.cleared":
+  en: "History cleared"
+  es: "Historial borrado"
+  gl: "Historial borrado"
+  it: "Cronologia cancellata"
+"settings.advanced":
+  en: "Advanced"
+  es: "Avanzado"
+  gl: "Avanzado"
+  it: "Avanzate"
+"settings.log_level":
+  en: "Log level"
+  es: "Nivel de registro"
+  gl: "Nivel de rexistro"
+  it: "Livello di log"

@@ -1,0 +1,57 @@
+# The charts area. Glossary and rules: docs/i18n.md
+_version: 2
+"charts.line":
+  en: "Line"
+  es: "Línea"
+  gl: "Liña"
+  it: "Linea"
+"charts.bars":
+  en: "Bars"
+  es: "Barras"
+  gl: "Barras"
+  it: "Barre"
+"charts.steps":
+  en: "Steps"
+  es: "Escalones"
+  gl: "Chanzos"
+  it: "Gradini"
+"charts.dots":
+  en: "Dots"
+  es: "Puntos"
+  gl: "Puntos"
+  it: "Punti"
+"charts.range_1m":
+  en: "1 min"
+  es: "1 min"
+  gl: "1 min"
+  it: "1 min"
+"charts.range_5m":
+  en: "5 min"
+  es: "5 min"
+  gl: "5 min"
+  it: "5 min"
+"charts.range_15m":
+  en: "15 min"
+  es: "15 min"
+  gl: "15 min"
+  it: "15 min"
+"charts.range_1h":
+  en: "1 h"
+  es: "1 h"
+  gl: "1 h"
+  it: "1 h"
+"charts.now":
+  en: "now"
+  es: "ahora"
+  gl: "agora"
+  it: "ora"
+"charts.ago_min":
+  en: "-%{value} min"
+  es: "-%{value} min"
+  gl: "-%{value} min"
+  it: "-%{value} min"
+"charts.ago_s":
+  en: "-%{value} s"
+  es: "-%{value} s"
+  gl: "-%{value} s"
+  it: "-%{value} s"

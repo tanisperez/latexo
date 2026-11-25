@@ -1,0 +1,52 @@
+# The network area. Glossary and rules: docs/i18n.md
+_version: 2
+"network.chart":
+  en: "Network traffic"
+  es: "Tráfico de red"
+  gl: "Tráfico de rede"
+  it: "Traffico di rete"
+"network.down":
+  en: "Download"
+  es: "Bajada"
+  gl: "Baixada"
+  it: "Download"
+"network.up":
+  en: "Upload"
+  es: "Subida"
+  gl: "Subida"
+  it: "Upload"
+"network.received_session":
+  en: "Received since start"
+  es: "Recibido desde el inicio"
+  gl: "Recibido desde o inicio"
+  it: "Ricevuto dall'avvio"
+"network.sent_session":
+  en: "Sent since start"
+  es: "Enviado desde el inicio"
+  gl: "Enviado desde o inicio"
+  it: "Inviato dall'avvio"
+"network.address":
+  en: "Local IP"
+  es: "IP local"
+  gl: "IP local"
+  it: "IP locale"
+"network.mac":
+  en: "MAC address"
+  es: "Dirección MAC"
+  gl: "Enderezo MAC"
+  it: "Indirizzo MAC"
+"network.interfaces":
+  en: "Adapters"
+  es: "Adaptadores"
+  gl: "Adaptadores"
+  it: "Schede di rete"
+"network.inactive":
+  en: "inactive"
+  es: "inactivo"
+  gl: "inactivo"
+  it: "inattiva"
+"network.disconnected":
+  en: "Disconnected"
+  es: "Desconectado"
+  gl: "Desconectado"
+  it: "Disconnesso"

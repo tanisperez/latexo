@@ -1,0 +1,52 @@
+# The overview area. Glossary and rules: docs/i18n.md
+_version: 2
+"overview.subtitle":
+  en: "This computer · %{os} · up %{uptime}"
+  es: "Este equipo · %{os} · activo %{uptime}"
+  gl: "Este equipo · %{os} · activo %{uptime}"
+  it: "Questo computer · %{os} · attivo da %{uptime}"
+"overview.cpu_split":
+  en: "user %{user} · system %{system}"
+  es: "usuario %{user} · sistema %{system}"
+  gl: "usuario %{user} · sistema %{system}"
+  it: "utente %{user} · sistema %{system}"
+"overview.gpu_memory":
+  en: "%{used} of %{total} memory"
+  es: "%{used} de %{total} de memoria"
+  gl: "%{used} de %{total} de memoria"
+  it: "%{used} di %{total} di memoria"
+"overview.memory_used":
+  en: "%{used} of %{total} in use"
+  es: "%{used} de %{total} en uso"
+  gl: "%{used} de %{total} en uso"
+  it: "%{used} di %{total} in uso"
+"overview.disk_split":
+  en: "read %{read} · write %{write}"
+  es: "lectura %{read} · escritura %{write}"
+  gl: "lectura %{read} · escritura %{write}"
+  it: "lettura %{read} · scrittura %{write}"
+"overview.net_split":
+  en: "↓ %{down} · ↑ %{up}"
+  es: "↓ %{down} · ↑ %{up}"
+  gl: "↓ %{down} · ↑ %{up}"
+  it: "↓ %{down} · ↑ %{up}"
+"overview.hottest":
+  en: "hottest: %{sensor} %{value}"
+  es: "más caliente: %{sensor} %{value}"
+  gl: "máis quente: %{sensor} %{value}"
+  it: "più caldo: %{sensor} %{value}"
+"overview.busiest":
+  en: "Busiest now"
+  es: "Más activos ahora"
+  gl: "Máis activos agora"
+  it: "Più attivi ora"
+"overview.busiest_unit":
+  en: "% of one thread"
+  es: "% de un hilo"
+  gl: "% dun fío"
+  it: "% di un thread"
+"overview.energy_today":
+  en: "today %{energy} · %{cost}"
+  es: "hoy %{energy} · %{cost}"
+  gl: "hoxe %{energy} · %{cost}"
+  it: "oggi %{energy} · %{cost}"

@@ -1,0 +1,97 @@
+# The cores area. Glossary and rules: docs/i18n.md
+_version: 2
+"cores.subtitle":
+  en: "%{count} logical processors · usage and temperature"
+  es: "%{count} procesadores lógicos · uso y temperatura"
+  gl: "%{count} procesadores lóxicos · uso e temperatura"
+  it: "%{count} processori logici · uso e temperatura"
+"cores.view_bars":
+  en: "Bars"
+  es: "Barras"
+  gl: "Barras"
+  it: "Barre"
+"cores.view_heatmap":
+  en: "Heat map"
+  es: "Mapa de calor"
+  gl: "Mapa de calor"
+  it: "Mappa di calore"
+"cores.view_charts":
+  en: "Charts"
+  es: "Mini-gráficas"
+  gl: "Minigráficas"
+  it: "Grafici"
+"cores.view_map":
+  en: "Processor"
+  es: "Procesador"
+  gl: "Procesador"
+  it: "Processore"
+"cores.core":
+  en: "Core %{number}"
+  es: "Núcleo %{number}"
+  gl: "Núcleo %{number}"
+  it: "Core %{number}"
+"cores.short":
+  en: "C%{number}"
+  es: "N%{number}"
+  gl: "N%{number}"
+  it: "C%{number}"
+"cores.core_column":
+  en: "Core"
+  es: "Núcleo"
+  gl: "Núcleo"
+  it: "Core"
+"cores.usage":
+  en: "Usage"
+  es: "Uso"
+  gl: "Uso"
+  it: "Uso"
+"cores.temperature":
+  en: "Temperature"
+  es: "Temperatura"
+  gl: "Temperatura"
+  it: "Temperatura"
+"cores.clock":
+  en: "Clock"
+  es: "Reloj"
+  gl: "Reloxo"
+  it: "Frequenza"
+"cores.bars_title":
+  en: "Usage and temperature per core"
+  es: "Uso y temperatura por núcleo"
+  gl: "Uso e temperatura por núcleo"
+  it: "Uso e temperatura per core"
+"cores.hot":
+  en: "80 °C or more"
+  es: "80 °C o más"
+  gl: "80 °C ou máis"
+  it: "80 °C o più"
+"cores.heatmap_title":
+  en: "Usage per core over time"
+  es: "Uso por núcleo en el tiempo"
+  gl: "Uso por núcleo no tempo"
+  it: "Uso per core nel tempo"
+"cores.busiest":
+  en: "Busiest core"
+  es: "Núcleo más cargado"
+  gl: "Núcleo máis cargado"
+  it: "Core più carico"
+"cores.hottest":
+  en: "Hottest core"
+  es: "Núcleo más caliente"
+  gl: "Núcleo máis quente"
+  it: "Core più caldo"
+"cores.spread":
+  en: "Temperature spread"
+  es: "Diferencia de temperatura"
+  gl: "Diferenza de temperatura"
+  it: "Differenza di temperatura"
+"cores.map_title":
+  en: "Processor map"
+  es: "Mapa del procesador"
+  gl: "Mapa do procesador"
+  it: "Mappa del processore"
+"cores.temperature_title":
+  en: "Temperature per core"
+  es: "Temperatura por núcleo"
+  gl: "Temperatura por núcleo"
+  it: "Temperatura per core"

@@ -3466,6 +3466,8 @@ dependencies = [
 name = "latexo-app"
 version = "0.1.0-dev"
 dependencies = [
+ "async-channel",
+ "chrono",
  "embed-resource",
  "gpui-kit",
  "latexo-cli",

@@ -1,0 +1,107 @@
+# The temperatures area. Glossary and rules: docs/i18n.md
+_version: 2
+"temperatures.subtitle":
+  en: "%{sensors} · %{fans}"
+  es: "%{sensors} · %{fans}"
+  gl: "%{sensors} · %{fans}"
+  it: "%{sensors} · %{fans}"
+"temperatures.sensors.one":
+  en: "%{count} sensor"
+  es: "%{count} sensor"
+  gl: "%{count} sensor"
+  it: "%{count} sensore"
+"temperatures.sensors.other":
+  en: "%{count} sensors"
+  es: "%{count} sensores"
+  gl: "%{count} sensores"
+  it: "%{count} sensori"
+"temperatures.fans.one":
+  en: "%{count} fan"
+  es: "%{count} ventilador"
+  gl: "%{count} ventilador"
+  it: "%{count} ventola"
+"temperatures.fans.other":
+  en: "%{count} fans"
+  es: "%{count} ventiladores"
+  gl: "%{count} ventiladores"
+  it: "%{count} ventole"
+"temperatures.hot.one":
+  en: "%{count} sensor running hot"
+  es: "%{count} sensor elevado"
+  gl: "%{count} sensor elevado"
+  it: "%{count} sensore caldo"
+"temperatures.hot.other":
+  en: "%{count} sensors running hot"
+  es: "%{count} sensores elevados"
+  gl: "%{count} sensores elevados"
+  it: "%{count} sensori caldi"
+"temperatures.chart":
+  en: "Processor temperature"
+  es: "Temperatura del procesador"
+  gl: "Temperatura do procesador"
+  it: "Temperatura del processore"
+"temperatures.normal":
+  en: "Normal"
+  es: "Normal"
+  gl: "Normal"
+  it: "Normale"
+"temperatures.high":
+  en: "High (80 °C or more)"
+  es: "Elevada (80 °C o más)"
+  gl: "Elevada (80 °C ou máis)"
+  it: "Elevata (80 °C o più)"
+"temperatures.cpu":
+  en: "Processor"
+  es: "Procesador"
+  gl: "Procesador"
+  it: "Processore"
+"temperatures.max_in_range":
+  en: "Highest in %{range}"
+  es: "Máximo en %{range}"
+  gl: "Máximo en %{range}"
+  it: "Massimo in %{range}"
+"temperatures.max_sub":
+  en: "highest in %{range}: %{value}"
+  es: "máx. en %{range}: %{value}"
+  gl: "máx. en %{range}: %{value}"
+  it: "max in %{range}: %{value}"
+"temperatures.storage":
+  en: "Hottest drive"
+  es: "Disco más caliente"
+  gl: "Disco máis quente"
+  it: "Disco più caldo"
+"temperatures.critical":
+  en: "Critical limit"
+  es: "Límite crítico"
+  gl: "Límite crítico"
+  it: "Limite critico"
+"temperatures.sensors_title":
+  en: "Sensors"
+  es: "Sensores"
+  gl: "Sensores"
+  it: "Sensori"
+"temperatures.none_note":
+  en: "This computer reports no temperature sensor to Latexo. On Windows most sensors need a driver from the board maker."
+  es: "Este equipo no informa de ningún sensor de temperatura a Latexo. En Windows la mayoría de los sensores necesitan un controlador del fabricante de la placa."
+  gl: "Este equipo non informa de ningún sensor de temperatura a Latexo. En Windows a maioría dos sensores precisan un controlador do fabricante da placa."
+  it: "Questo computer non comunica nessun sensore di temperatura a Latexo. Su Windows la maggior parte dei sensori richiede un driver del produttore della scheda madre."
+"temperatures.core":
+  en: "Core %{number}"
+  es: "Núcleo %{number}"
+  gl: "Núcleo %{number}"
+  it: "Core %{number}"
+"temperatures.package":
+  en: "CPU package"
+  es: "Paquete de la CPU"
+  gl: "Paquete da CPU"
+  it: "Package della CPU"
+"temperatures.acpi":
+  en: "ACPI zone"
+  es: "Zona ACPI"
+  gl: "Zona ACPI"
+  it: "Zona ACPI"
+"temperatures.ethernet":
+  en: "Ethernet"
+  es: "Ethernet"
+  gl: "Ethernet"
+  it: "Ethernet"

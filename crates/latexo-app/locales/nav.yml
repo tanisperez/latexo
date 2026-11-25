@@ -1,0 +1,87 @@
+# The nav area. Glossary and rules: docs/i18n.md
+_version: 2
+"nav.overview":
+  en: "Overview"
+  es: "Resumen"
+  gl: "Resumo"
+  it: "Panoramica"
+"nav.processes":
+  en: "Processes"
+  es: "Procesos"
+  gl: "Procesos"
+  it: "Processi"
+"nav.cpu":
+  en: "CPU"
+  es: "CPU"
+  gl: "CPU"
+  it: "CPU"
+"nav.cores":
+  en: "Cores"
+  es: "Núcleos"
+  gl: "Núcleos"
+  it: "Core"
+"nav.gpu":
+  en: "GPU"
+  es: "GPU"
+  gl: "GPU"
+  it: "GPU"
+"nav.memory":
+  en: "Memory"
+  es: "Memoria"
+  gl: "Memoria"
+  it: "Memoria"
+"nav.disk":
+  en: "Disk"
+  es: "Disco"
+  gl: "Disco"
+  it: "Disco"
+"nav.network":
+  en: "Network"
+  es: "Red"
+  gl: "Rede"
+  it: "Rete"
+"nav.temperatures":
+  en: "Temperatures"
+  es: "Temperaturas"
+  gl: "Temperaturas"
+  it: "Temperature"
+"nav.fans":
+  en: "Fans"
+  es: "Ventiladores"
+  gl: "Ventiladores"
+  it: "Ventole"
+"nav.energy":
+  en: "Energy"
+  es: "Energía"
+  gl: "Enerxía"
+  it: "Energia"
+"nav.alerts":
+  en: "Alerts"
+  es: "Alertas"
+  gl: "Alertas"
+  it: "Avvisi"
+"nav.settings":
+  en: "Settings"
+  es: "Ajustes"
+  gl: "Axustes"
+  it: "Impostazioni"
+"nav.about":
+  en: "About Latexo"
+  es: "Acerca de Latexo"
+  gl: "Acerca de Latexo"
+  it: "Informazioni su Latexo"
+"nav.hardware":
+  en: "Hardware"
+  es: "Hardware"
+  gl: "Hardware"
+  it: "Hardware"
+"nav.system":
+  en: "System"
+  es: "Sistema"
+  gl: "Sistema"
+  it: "Sistema"
+"nav.live":
+  en: "Live · every %{interval}"
+  es: "En vivo · cada %{interval}"
+  gl: "En directo · cada %{interval}"
+  it: "In tempo reale · ogni %{interval}"

@@ -1,0 +1,52 @@
+# The gpu area. Glossary and rules: docs/i18n.md
+_version: 2
+"gpu.none":
+  en: "No graphics card found"
+  es: "No se ha encontrado ninguna tarjeta gráfica"
+  gl: "Non se atopou ningunha tarxeta gráfica"
+  it: "Nessuna scheda grafica trovata"
+"gpu.usage":
+  en: "GPU usage"
+  es: "Uso de la GPU"
+  gl: "Uso da GPU"
+  it: "Uso della GPU"
+"gpu.memory":
+  en: "Video memory"
+  es: "Memoria de vídeo"
+  gl: "Memoria de vídeo"
+  it: "Memoria video"
+"gpu.memory_sub":
+  en: "of %{total} · %{percent}"
+  es: "de %{total} · %{percent}"
+  gl: "de %{total} · %{percent}"
+  it: "di %{total} · %{percent}"
+"gpu.temperature":
+  en: "Temperature"
+  es: "Temperatura"
+  gl: "Temperatura"
+  it: "Temperatura"
+"gpu.power":
+  en: "Power"
+  es: "Consumo"
+  gl: "Consumo"
+  it: "Potenza"
+"gpu.processes":
+  en: "Processes using the GPU"
+  es: "Procesos que usan la GPU"
+  gl: "Procesos que usan a GPU"
+  it: "Processi che usano la GPU"
+"gpu.model":
+  en: "Model"
+  es: "Modelo"
+  gl: "Modelo"
+  it: "Modello"
+"gpu.clock":
+  en: "Core clock"
+  es: "Reloj del núcleo"
+  gl: "Reloxo do núcleo"
+  it: "Frequenza del core"
+"gpu.no_usage_note":
+  en: "The driver of this card does not report its usage to Latexo. NVIDIA cards report it through their driver, and AMD cards on Linux too."
+  es: "El controlador de esta tarjeta no informa de su uso a Latexo. Las tarjetas NVIDIA lo informan con su controlador, y las AMD en Linux también."
+  gl: "O controlador desta tarxeta non informa do seu uso a Latexo. As tarxetas NVIDIA infórmano co seu controlador, e as AMD en Linux tamén."
+  it: "Il driver di questa scheda non comunica il suo uso a Latexo. Le schede NVIDIA lo comunicano con il loro driver, e anche le AMD su Linux."

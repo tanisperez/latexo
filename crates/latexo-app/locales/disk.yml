@@ -1,0 +1,52 @@
+# The disk area. Glossary and rules: docs/i18n.md
+_version: 2
+"disk.volumes.one":
+  en: "%{count} volume"
+  es: "%{count} volumen"
+  gl: "%{count} volume"
+  it: "%{count} volume"
+"disk.volumes.other":
+  en: "%{count} volumes"
+  es: "%{count} volúmenes"
+  gl: "%{count} volumes"
+  it: "%{count} volumi"
+"disk.chart":
+  en: "Disk activity"
+  es: "Actividad del disco"
+  gl: "Actividade do disco"
+  it: "Attività del disco"
+"disk.read":
+  en: "Read"
+  es: "Lectura"
+  gl: "Lectura"
+  it: "Lettura"
+"disk.write":
+  en: "Write"
+  es: "Escritura"
+  gl: "Escritura"
+  it: "Scrittura"
+"disk.read_session":
+  en: "Read since start"
+  es: "Leído desde el inicio"
+  gl: "Lido desde o inicio"
+  it: "Letto dall'avvio"
+"disk.written_session":
+  en: "Written since start"
+  es: "Escrito desde el inicio"
+  gl: "Escrito desde o inicio"
+  it: "Scritto dall'avvio"
+"disk.volumes_title":
+  en: "Volumes"
+  es: "Unidades"
+  gl: "Unidades"
+  it: "Volumi"
+"disk.top":
+  en: "Processes with most disk"
+  es: "Procesos con más disco"
+  gl: "Procesos con máis disco"
+  it: "Processi con più disco"
+"disk.almost_full":
+  en: "A volume is almost full"
+  es: "Una unidad casi llena"
+  gl: "Unha unidade case chea"
+  it: "Un volume quasi pieno"

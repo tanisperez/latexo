@@ -1,0 +1,117 @@
+# The alerts area. Glossary and rules: docs/i18n.md
+_version: 2
+"alerts.subtitle":
+  en: "%{rules} · %{active} active"
+  es: "%{rules} · %{active} activas"
+  gl: "%{rules} · %{active} activas"
+  it: "%{rules} · %{active} attive"
+"alerts.rules.one":
+  en: "%{count} rule"
+  es: "%{count} regla"
+  gl: "%{count} regra"
+  it: "%{count} regola"
+"alerts.rules.other":
+  en: "%{count} rules"
+  es: "%{count} reglas"
+  gl: "%{count} regras"
+  it: "%{count} regole"
+"alerts.rules_title":
+  en: "Rules"
+  es: "Reglas"
+  gl: "Regras"
+  it: "Regole"
+"alerts.history_title":
+  en: "Recent history"
+  es: "Historial reciente"
+  gl: "Historial recente"
+  it: "Cronologia recente"
+"alerts.no_rules":
+  en: "No rules yet"
+  es: "Aún no hay reglas"
+  gl: "Aínda non hai regras"
+  it: "Ancora nessuna regola"
+"alerts.no_history":
+  en: "No alert has fired in this session"
+  es: "No ha saltado ninguna alerta en esta sesión"
+  gl: "Non saltou ningunha alerta nesta sesión"
+  it: "Nessun avviso in questa sessione"
+"alerts.new":
+  en: "New alert"
+  es: "Nueva alerta"
+  gl: "Nova alerta"
+  it: "Nuovo avviso"
+"alerts.remove":
+  en: "Remove rule"
+  es: "Quitar regla"
+  gl: "Quitar regra"
+  it: "Rimuovi regola"
+"alerts.metric_cpu_temperature":
+  en: "CPU running hot"
+  es: "CPU caliente"
+  gl: "CPU quente"
+  it: "CPU calda"
+"alerts.metric_gpu_temperature":
+  en: "GPU running hot"
+  es: "GPU caliente"
+  gl: "GPU quente"
+  it: "GPU calda"
+"alerts.metric_cpu_usage":
+  en: "CPU busy"
+  es: "CPU ocupada"
+  gl: "CPU ocupada"
+  it: "CPU occupata"
+"alerts.metric_memory_usage":
+  en: "Memory almost full"
+  es: "Memoria casi llena"
+  gl: "Memoria case chea"
+  it: "Memoria quasi piena"
+"alerts.metric_disk_usage":
+  en: "Disk almost full"
+  es: "Disco casi lleno"
+  gl: "Disco case cheo"
+  it: "Disco quasi pieno"
+"alerts.metric_power":
+  en: "High power"
+  es: "Consumo alto"
+  gl: "Consumo alto"
+  it: "Potenza elevata"
+"alerts.metric_fan":
+  en: "Fan stopped"
+  es: "Ventilador parado"
+  gl: "Ventilador parado"
+  it: "Ventola ferma"
+"alerts.condition_above":
+  en: "%{value} or more"
+  es: "%{value} o más"
+  gl: "%{value} ou máis"
+  it: "%{value} o più"
+"alerts.condition_below":
+  en: "%{value} or less"
+  es: "%{value} o menos"
+  gl: "%{value} ou menos"
+  it: "%{value} o meno"
+"alerts.condition_for":
+  en: " for %{duration}"
+  es: " durante %{duration}"
+  gl: " durante %{duration}"
+  it: " per %{duration}"
+"alerts.at_once":
+  en: "At once"
+  es: "Al momento"
+  gl: "Ao momento"
+  it: "Subito"
+"alerts.action_notify":
+  en: "Notify"
+  es: "Notificar"
+  gl: "Notificar"
+  it: "Notifica"
+"alerts.action_log":
+  en: "Log only"
+  es: "Solo registrar"
+  gl: "Só rexistrar"
+  it: "Solo registro"
+"alerts.fired":
+  en: "%{rule}: %{value}"
+  es: "%{rule}: %{value}"
+  gl: "%{rule}: %{value}"
+  it: "%{rule}: %{value}"

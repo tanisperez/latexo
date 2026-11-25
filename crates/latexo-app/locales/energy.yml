@@ -1,0 +1,102 @@
+# The energy area. Glossary and rules: docs/i18n.md
+_version: 2
+"energy.subtitle":
+  en: "Measured power · %{price}/kWh"
+  es: "Consumo medido · %{price}/kWh"
+  gl: "Consumo medido · %{price}/kWh"
+  it: "Potenza misurata · %{price}/kWh"
+"energy.chart":
+  en: "Power of the computer"
+  es: "Consumo del equipo"
+  gl: "Consumo do equipo"
+  it: "Potenza del computer"
+"energy.measured_total":
+  en: "Measured"
+  es: "Medido"
+  gl: "Medido"
+  it: "Misurato"
+"energy.cpu":
+  en: "CPU (package)"
+  es: "CPU (paquete)"
+  gl: "CPU (paquete)"
+  it: "CPU (package)"
+"energy.gpu":
+  en: "GPU"
+  es: "GPU"
+  gl: "GPU"
+  it: "GPU"
+"energy.battery":
+  en: "Battery"
+  es: "Batería"
+  gl: "Batería"
+  it: "Batteria"
+"energy.measured":
+  en: "%{value} · measured"
+  es: "%{value} · medido"
+  gl: "%{value} · medido"
+  it: "%{value} · misurato"
+"energy.discharging":
+  en: "giving %{value}"
+  es: "entregando %{value}"
+  gl: "entregando %{value}"
+  it: "eroga %{value}"
+"energy.charging":
+  en: "charging at %{value}"
+  es: "cargando a %{value}"
+  gl: "cargando a %{value}"
+  it: "in carica a %{value}"
+"energy.plugged":
+  en: "plugged in"
+  es: "enchufado"
+  gl: "enchufado"
+  it: "collegato"
+"energy.not_measured":
+  en: "Not measured"
+  es: "Sin medir"
+  gl: "Sen medir"
+  it: "Non misurato"
+"energy.now":
+  en: "Now"
+  es: "Ahora"
+  gl: "Agora"
+  it: "Ora"
+"energy.today":
+  en: "Today"
+  es: "Hoy"
+  gl: "Hoxe"
+  it: "Oggi"
+"energy.month":
+  en: "This month"
+  es: "Este mes"
+  gl: "Este mes"
+  it: "Questo mese"
+"energy.price":
+  en: "Price"
+  es: "Tarifa"
+  gl: "Tarifa"
+  it: "Tariffa"
+"energy.max_in_range":
+  en: "Highest in %{range}"
+  es: "Máximo en %{range}"
+  gl: "Máximo en %{range}"
+  it: "Massimo in %{range}"
+"energy.by_part":
+  en: "By part"
+  es: "Por pieza"
+  gl: "Por peza"
+  it: "Per componente"
+"energy.note_root":
+  en: "The processor power counter can only be read by root on this system. On battery, Latexo measures the whole laptop from the battery instead."
+  es: "En este sistema solo root puede leer el contador de consumo del procesador. Con batería, Latexo mide el portátil entero desde la batería."
+  gl: "Neste sistema só root pode ler o contador de consumo do procesador. Con batería, Latexo mide o portátil enteiro desde a batería."
+  it: "Su questo sistema solo root può leggere il contatore di potenza del processore. A batteria, Latexo misura l'intero portatile dalla batteria."
+"energy.note_windows":
+  en: "Windows does not report the processor power without a driver. On battery, Latexo measures the whole laptop from the battery."
+  es: "Windows no informa del consumo del procesador sin un controlador. Con batería, Latexo mide el portátil entero desde la batería."
+  gl: "Windows non informa do consumo do procesador sen un controlador. Con batería, Latexo mide o portátil enteiro desde a batería."
+  it: "Windows non comunica la potenza del processore senza un driver. A batteria, Latexo misura l'intero portatile dalla batteria."
+"energy.note_none":
+  en: "This computer has no power sensor Latexo can read. On battery, Latexo measures the whole laptop from the battery."
+  es: "Este equipo no tiene ningún sensor de consumo que Latexo pueda leer. Con batería, Latexo mide el portátil entero desde la batería."
+  gl: "Este equipo non ten ningún sensor de consumo que Latexo poida ler. Con batería, Latexo mide o portátil enteiro desde a batería."
+  it: "Questo computer non ha nessun sensore di potenza che Latexo possa leggere. A batteria, Latexo misura l'intero portatile dalla batteria."

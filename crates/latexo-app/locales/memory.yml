@@ -1,0 +1,67 @@
+# The memory area. Glossary and rules: docs/i18n.md
+_version: 2
+"memory.subtitle":
+  en: "%{total} · swap %{swap}"
+  es: "%{total} · intercambio %{swap}"
+  gl: "%{total} · intercambio %{swap}"
+  it: "%{total} · swap %{swap}"
+"memory.chart":
+  en: "Memory usage"
+  es: "Uso de memoria"
+  gl: "Uso de memoria"
+  it: "Uso della memoria"
+"memory.in_use":
+  en: "In use"
+  es: "En uso"
+  gl: "En uso"
+  it: "In uso"
+"memory.cached":
+  en: "Cache"
+  es: "Caché"
+  gl: "Caché"
+  it: "Cache"
+"memory.free":
+  en: "Free"
+  es: "Libre"
+  gl: "Libre"
+  it: "Libera"
+"memory.swap":
+  en: "Swap"
+  es: "Intercambio"
+  gl: "Intercambio"
+  it: "Swap"
+"memory.total":
+  en: "Total"
+  es: "Total"
+  gl: "Total"
+  it: "Totale"
+"memory.available":
+  en: "Available"
+  es: "Disponible"
+  gl: "Dispoñible"
+  it: "Disponibile"
+"memory.breakdown":
+  en: "Breakdown"
+  es: "Reparto"
+  gl: "Reparto"
+  it: "Ripartizione"
+"memory.top":
+  en: "Processes with most memory"
+  es: "Procesos con más memoria"
+  gl: "Procesos con máis memoria"
+  it: "Processi con più memoria"
+"memory.high":
+  en: "High usage"
+  es: "Uso alto"
+  gl: "Uso alto"
+  it: "Uso elevato"
+"memory.normal":
+  en: "Normal usage"
+  es: "Uso normal"
+  gl: "Uso normal"
+  it: "Uso normale"
+"memory.value_sub":
+  en: "of %{total} · %{percent}"
+  es: "de %{total} · %{percent}"
+  gl: "de %{total} · %{percent}"
+  it: "di %{total} · %{percent}"

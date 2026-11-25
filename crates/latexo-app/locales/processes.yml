@@ -1,0 +1,127 @@
+# The processes area. Glossary and rules: docs/i18n.md
+_version: 2
+"processes.subtitle":
+  en: "%{processes} processes · %{threads} threads"
+  es: "%{processes} procesos · %{threads} hilos"
+  gl: "%{processes} procesos · %{threads} fíos"
+  it: "%{processes} processi · %{threads} thread"
+"processes.search_placeholder":
+  en: "Search process or PID"
+  es: "Buscar proceso o PID"
+  gl: "Buscar proceso ou PID"
+  it: "Cerca processo o PID"
+"processes.filter_all":
+  en: "All"
+  es: "Todos"
+  gl: "Todos"
+  it: "Tutti"
+"processes.filter_apps":
+  en: "Mine"
+  es: "Míos"
+  gl: "Meus"
+  it: "Miei"
+"processes.filter_system":
+  en: "System"
+  es: "Sistema"
+  gl: "Sistema"
+  it: "Sistema"
+"processes.name":
+  en: "Name"
+  es: "Nombre"
+  gl: "Nome"
+  it: "Nome"
+"processes.pid":
+  en: "PID"
+  es: "PID"
+  gl: "PID"
+  it: "PID"
+"processes.user":
+  en: "User"
+  es: "Usuario"
+  gl: "Usuario"
+  it: "Utente"
+"processes.cpu":
+  en: "CPU"
+  es: "CPU"
+  gl: "CPU"
+  it: "CPU"
+"processes.memory":
+  en: "Memory"
+  es: "Memoria"
+  gl: "Memoria"
+  it: "Memoria"
+"processes.threads":
+  en: "Threads"
+  es: "Hilos"
+  gl: "Fíos"
+  it: "Thread"
+"processes.disk":
+  en: "Disk"
+  es: "Disco"
+  gl: "Disco"
+  it: "Disco"
+"processes.footer_count":
+  en: "%{shown} of %{total} processes"
+  es: "%{shown} de %{total} procesos"
+  gl: "%{shown} de %{total} procesos"
+  it: "%{shown} di %{total} processi"
+"processes.footer_sort":
+  en: "Sorted by %{column}"
+  es: "Ordenado por %{column}"
+  gl: "Ordenado por %{column}"
+  it: "Ordinati per %{column}"
+"processes.end":
+  en: "End process"
+  es: "Finalizar proceso"
+  gl: "Finalizar proceso"
+  it: "Termina processo"
+"processes.end_tree":
+  en: "End process tree"
+  es: "Finalizar árbol de procesos"
+  gl: "Finalizar árbore de procesos"
+  it: "Termina albero dei processi"
+"processes.end_title":
+  en: "End «%{name}»"
+  es: "Finalizar «%{name}»"
+  gl: "Finalizar «%{name}»"
+  it: "Termina «%{name}»"
+"processes.end_tree_title":
+  en: "End «%{name}» and its children"
+  es: "Finalizar «%{name}» y sus hijos"
+  gl: "Finalizar «%{name}» e os seus fillos"
+  it: "Termina «%{name}» e i suoi figli"
+"processes.end_text":
+  en: "The process with PID %{pid} will stop running and any unsaved changes it has will be lost."
+  es: "El proceso con PID %{pid} dejará de ejecutarse y los cambios sin guardar que tenga se perderán."
+  gl: "O proceso co PID %{pid} deixará de executarse e os cambios sen gardar que teña perderanse."
+  it: "Il processo con PID %{pid} smetterà di funzionare e le modifiche non salvate andranno perse."
+"processes.end_tree_count.one":
+  en: "%{count} child process ends with it."
+  es: "Con él finaliza %{count} proceso hijo."
+  gl: "Con el finaliza %{count} proceso fillo."
+  it: "Con esso termina %{count} processo figlio."
+"processes.end_tree_count.other":
+  en: "%{count} child processes end with it."
+  es: "Con él finalizan %{count} procesos hijos."
+  gl: "Con el finalizan %{count} procesos fillos."
+  it: "Con esso terminano %{count} processi figli."
+"processes.end_usage":
+  en: "%{name} uses %{cpu} of one thread and %{memory} of memory."
+  es: "%{name} usa el %{cpu} de un hilo y %{memory} de memoria."
+  gl: "%{name} usa o %{cpu} dun fío e %{memory} de memoria."
+  it: "%{name} usa il %{cpu} di un thread e %{memory} di memoria."
+"processes.end_confirm":
+  en: "End"
+  es: "Finalizar"
+  gl: "Finalizar"
+  it: "Termina"
+"processes.end_gone":
+  en: "The process had already ended."
+  es: "El proceso ya había terminado."
+  gl: "O proceso xa rematara."
+  it: "Il processo era già terminato."
+"processes.end_denied":
+  en: "The system did not allow ending the process. It may belong to another user."
+  es: "El sistema no ha permitido finalizar el proceso. Puede que sea de otro usuario."
+  gl: "O sistema non permitiu finalizar o proceso. Pode que sexa doutro usuario."
+  it: "Il sistema non ha permesso di terminare il processo. Potrebbe appartenere a un altro utente."

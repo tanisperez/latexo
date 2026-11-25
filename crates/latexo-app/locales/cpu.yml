@@ -1,0 +1,57 @@
+# The cpu area. Glossary and rules: docs/i18n.md
+_version: 2
+"cpu.subtitle":
+  en: "%{model} · %{cores} cores · %{threads} threads"
+  es: "%{model} · %{cores} núcleos · %{threads} hilos"
+  gl: "%{model} · %{cores} núcleos · %{threads} fíos"
+  it: "%{model} · %{cores} core · %{threads} thread"
+"cpu.chart":
+  en: "CPU usage"
+  es: "Uso de CPU"
+  gl: "Uso da CPU"
+  it: "Uso della CPU"
+"cpu.usage":
+  en: "Usage"
+  es: "Uso"
+  gl: "Uso"
+  it: "Uso"
+"cpu.user":
+  en: "User"
+  es: "Usuario"
+  gl: "Usuario"
+  it: "Utente"
+"cpu.system":
+  en: "System"
+  es: "Sistema"
+  gl: "Sistema"
+  it: "Sistema"
+"cpu.idle":
+  en: "Idle"
+  es: "Inactivo"
+  gl: "Inactivo"
+  it: "Inattivo"
+"cpu.frequency":
+  en: "Average clock"
+  es: "Frecuencia media"
+  gl: "Frecuencia media"
+  it: "Frequenza media"
+"cpu.load":
+  en: "Load average"
+  es: "Carga media"
+  gl: "Carga media"
+  it: "Carico medio"
+"cpu.package_power":
+  en: "Package power"
+  es: "Consumo del paquete"
+  gl: "Consumo do paquete"
+  it: "Potenza del package"
+"cpu.uptime":
+  en: "Uptime"
+  es: "Tiempo activo"
+  gl: "Tempo activo"
+  it: "Tempo di attività"
+"cpu.processors":
+  en: "Logical processors"
+  es: "Procesadores lógicos"
+  gl: "Procesadores lóxicos"
+  it: "Processori logici"
