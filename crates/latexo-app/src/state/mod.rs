@@ -8,3 +8,4 @@ pub mod monitor;
 pub mod nav;
 pub mod settings;
 pub mod update;
+pub mod window;

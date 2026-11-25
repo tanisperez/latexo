@@ -335,6 +335,12 @@ impl AppView {
                     .min_h_0()
                     .flex()
                     .flex_col()
+                    .when(count == 0, |area| {
+                        area.child(super::widgets::empty_line(
+                            t!("processes.none_match"),
+                            palette,
+                        ))
+                    })
                     .child(list)
                     .child(gpui_kit::component::scroll::Scrollbar::vertical(
                         &self.process_scroll,
