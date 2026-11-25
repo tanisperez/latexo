@@ -398,7 +398,7 @@ impl AppView {
 
     pub(crate) fn render_disk(&self, sample: &Sample, palette: &Palette) -> AnyElement {
         let io = sample.disk_io;
-        let max = self.stacked_max(&SeriesKey::DiskRead, &SeriesKey::DiskWrite, 1.0e6);
+        let max = self.stacked_max(&SeriesKey::DiskRead, &SeriesKey::DiskWrite, 1_048_576.0);
         let list = sample
             .volumes
             .iter()
@@ -488,7 +488,7 @@ impl AppView {
 
     pub(crate) fn render_network(&self, sample: &Sample, palette: &Palette) -> AnyElement {
         let network = &sample.network;
-        let max = self.stacked_max(&SeriesKey::NetReceived, &SeriesKey::NetSent, 1.0e5);
+        let max = self.stacked_max(&SeriesKey::NetReceived, &SeriesKey::NetSent, 102_400.0);
         let busiest = network
             .interfaces
             .iter()

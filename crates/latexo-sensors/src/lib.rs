@@ -175,6 +175,7 @@ impl Sampler {
                 .with_disk_usage()
                 .with_tasks()
                 .with_gpu_usage()
+                .with_exe(UpdateKind::OnlyIfNotSet)
                 .with_user(UpdateKind::OnlyIfNotSet),
         );
     }
@@ -471,7 +472,7 @@ impl Sampler {
                 ProcessInfo {
                     pid: process.pid().as_u32(),
                     parent: process.parent().map(Pid::as_u32),
-                    name: process.name().to_string_lossy().to_string(),
+                    name: process_name(process),
                     user,
                     cpu_percent: process.cpu_usage(),
                     memory: process.memory(),
@@ -503,6 +504,29 @@ fn user_names(users: Option<&Users>) -> HashMap<Uid, String> {
         .flat_map(|users| users.iter())
         .map(|user| (user.id().clone(), user.name().to_string()))
         .collect()
+}
+
+/// The name of a process. Linux cuts the name it reports at 15 characters (`systemd-timesyn`):
+/// when the executable's file name starts with that name, it is the full one.
+fn process_name(process: &sysinfo::Process) -> String {
+    let name = process.name().to_string_lossy();
+    full_name(
+        &name,
+        process
+            .exe()
+            .and_then(|exe| exe.file_name())
+            .map(|f| f.to_string_lossy())
+            .as_deref(),
+    )
+}
+
+fn full_name(name: &str, exe: Option<&str>) -> String {
+    match exe {
+        Some(exe) if name.len() >= 15 && exe.len() > name.len() && exe.starts_with(name) => {
+            exe.to_string()
+        }
+        _ => name.to_string(),
+    }
 }
 
 fn is_loopback(name: &str) -> bool {
@@ -554,6 +578,16 @@ pub fn end_processes(pids: &[u32]) -> Result<(), KillError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_cut_name_takes_the_executable_name() {
+        assert_eq!(
+            full_name("systemd-timesyn", Some("systemd-timesyncd")),
+            "systemd-timesyncd"
+        );
+        assert_eq!(full_name("bash", Some("bash")), "bash");
+        assert_eq!(full_name("Web Content", Some("firefox")), "Web Content");
+    }
 
     #[test]
     fn loopback_interfaces_are_left_out() {

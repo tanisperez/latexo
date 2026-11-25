@@ -113,7 +113,7 @@ impl AppView {
             ),
         });
 
-        let disk_max = self.stacked_max(&SeriesKey::DiskRead, &SeriesKey::DiskWrite, 1.0e6);
+        let disk_max = self.stacked_max(&SeriesKey::DiskRead, &SeriesKey::DiskWrite, 1_048_576.0);
         cards.push(ResourceCard {
             screen: Screen::Disk,
             value: format::rate(sample.disk_io.read_per_sec + sample.disk_io.write_per_sec),
@@ -132,7 +132,7 @@ impl AppView {
             ),
         });
 
-        let net_max = self.stacked_max(&SeriesKey::NetReceived, &SeriesKey::NetSent, 1.0e5);
+        let net_max = self.stacked_max(&SeriesKey::NetReceived, &SeriesKey::NetSent, 102_400.0);
         cards.push(ResourceCard {
             screen: Screen::Network,
             value: format::rate(sample.network.received_per_sec + sample.network.sent_per_sec),

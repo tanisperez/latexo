@@ -24,6 +24,17 @@ pub fn nice_ceiling(value: f32, floor: f32) -> f32 {
     10.0 * magnitude
 }
 
+/// [`nice_ceiling`] for bytes: round in the binary unit the value is shown in, so the axis reads
+/// `1 MB/s` or `500 KB/s` rather than `954 KB/s`.
+pub fn nice_bytes_ceiling(value: f32, floor: f32) -> f32 {
+    let value = value.max(floor).max(1.0);
+    let mut unit = 1.0f32;
+    while value / unit >= 1000.0 {
+        unit *= 1024.0;
+    }
+    nice_ceiling(value / unit, 1.0) * unit
+}
+
 impl AppView {
     /// The values of `key` in the chart range.
     pub fn window(&self, key: &SeriesKey) -> Vec<f32> {
@@ -70,7 +81,7 @@ impl AppView {
             .map(|(a, b)| a + b)
             .filter(|v| v.is_finite())
             .fold(0.0f32, f32::max);
-        nice_ceiling(peak * 1.1, floor)
+        nice_bytes_ceiling(peak * 1.1, floor)
     }
 
     /// The automatic scale of one series.
@@ -95,5 +106,14 @@ mod tests {
         assert_eq!(nice_ceiling(120.0, 1.0), 200.0);
         assert_eq!(nice_ceiling(1000.0, 1.0), 1000.0);
         assert_eq!(nice_ceiling(7.0e6, 1.0), 1.0e7);
+    }
+
+    #[test]
+    fn byte_ceilings_are_round_in_binary_units() {
+        assert_eq!(nice_bytes_ceiling(900.0 * 1024.0, 1.0), 1000.0 * 1024.0);
+        assert_eq!(
+            nice_bytes_ceiling(3.0 * 1024.0 * 1024.0, 1.0),
+            5.0 * 1024.0 * 1024.0
+        );
     }
 }

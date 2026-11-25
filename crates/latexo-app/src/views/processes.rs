@@ -14,14 +14,14 @@ use latexo_core::Sample;
 use latexo_core::process::{ProcessColumn, ProcessFilter, ProcessInfo, tree};
 use rust_i18n::t;
 use telaio_ui::components::{
-    ConfirmDialog, DangerButton, MenuEntries, SegmentedControl, SegmentedItem, open_confirm_dialog,
-    text_field,
+    ConfirmDialog, DangerButton, MenuEntries, SegmentedControl, SegmentedItem, edit_menu_area,
+    no_input_menu, open_confirm_dialog,
 };
 
 use crate::state::format;
 use crate::theme::metrics::{
-    PROCESS_SEARCH_WIDTH, RADIUS_LG, TEXT_ROW, TEXT_SM, VIRTUAL_TABLE_HEADER_HEIGHT,
-    VIRTUAL_TABLE_ROW_HEIGHT,
+    CONTROL_HEIGHT, INPUT_PADDING_X, PROCESS_SEARCH_WIDTH, RADIUS_LG, RADIUS_MD, TEXT_ROW, TEXT_SM,
+    VIRTUAL_TABLE_HEADER_HEIGHT, VIRTUAL_TABLE_ROW_HEIGHT,
 };
 use crate::theme::{Palette, PaletteExt};
 
@@ -85,7 +85,7 @@ impl AppView {
     /// The header controls of the Processes screen: search, filter and End process.
     pub(crate) fn process_controls(
         &self,
-        _palette: &Palette,
+        palette: &Palette,
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) -> AnyElement {
@@ -107,13 +107,31 @@ impl AppView {
                     }),
             );
         }
-        let search = text_field(&self.search, cx)
+        let border_hover = palette.border_hover;
+        let search = h_flex()
+            .id("process-search")
             .w(px(PROCESS_SEARCH_WIDTH))
+            .h(px(CONTROL_HEIGHT))
+            .px(px(INPUT_PADDING_X))
+            .gap(px(8.0))
+            .items_center()
+            .bg(palette.raised)
+            .border_1()
+            .border_color(palette.border_strong)
+            .rounded(px(RADIUS_MD))
+            .hover(move |style| style.border_color(border_hover))
             .child(
-                Input::new(&self.search)
-                    .appearance(false)
-                    .prefix(Icon::new(IconName::Search).small())
-                    .cleanable(true),
+                Icon::new(IconName::Search)
+                    .with_size(px(14.0))
+                    .text_color(palette.fg_subtle),
+            )
+            .child(
+                edit_menu_area(&self.search).flex_1().min_w_0().child(
+                    Input::new(&self.search)
+                        .appearance(false)
+                        .cleanable(true)
+                        .context_menu(no_input_menu()),
+                ),
             );
         let weak = cx.weak_entity();
         let end = DangerButton::new("end-process", t!("processes.end"))
@@ -344,6 +362,7 @@ impl AppView {
         };
         h_flex()
             .id(SharedString::from(format!("process-{pid}")))
+            .w_full()
             .h(px(VIRTUAL_TABLE_ROW_HEIGHT))
             .px(px(ROW_PADDING))
             .gap(px(COLUMN_GAP))
