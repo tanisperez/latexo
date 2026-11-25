@@ -1,0 +1,143 @@
+# nfpm config for the deb and rpm packages. Driven by package.sh, which sets:
+# Content entries use "expand: true" so nfpm expands the variables in src.
+#   LATEXO_VERSION  e.g. 0.1.0 or 0.1.0-rc.1 (nfpm maps the pre-release to 0.1.0~rc.1)
+#   LATEXO_ARCH     amd64 or arm64 (Go style, nfpm converts it for rpm)
+#   LATEXO_BIN      path to the latexo binary
+#   LATEXO_ROOT     repo root
+# The package is latexo: "latexo" is taken in the AUR by an RTF word processor. The binary
+# stays latexo.
+name: latexo
+arch: ${LATEXO_ARCH}
+platform: linux
+version: ${LATEXO_VERSION}
+version_schema: semver
+section: admin
+priority: optional
+maintainer: Estanislao Pérez Nartallo <tanisperez@gmail.com>
+description: |
+  A native system monitor.
+  Latexo shows the CPU and each core, the GPU, memory, disks, network, temperatures, fans and
+  power with live charts, lists the processes and fires alert rules. Written in Rust.
+vendor: Latexo
+homepage: https://github.com/tanisperez/latexo
+license: Apache-2.0
+
+contents:
+  # /usr/bin is on the PATH: `latexo file.txt` and `latexo folder` work from any terminal.
+  - src: ${LATEXO_BIN}
+    dst: /usr/bin/latexo
+    expand: true
+    file_info:
+      mode: 0755
+  - src: ${LATEXO_ROOT}/packaging/linux/codes.tanis.latexo.desktop
+    dst: /usr/share/applications/codes.tanis.latexo.desktop
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/latexo.svg
+    dst: /usr/share/icons/hicolor/scalable/apps/codes.tanis.latexo.svg
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-16.png
+    dst: /usr/share/icons/hicolor/16x16/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-24.png
+    dst: /usr/share/icons/hicolor/24x24/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-32.png
+    dst: /usr/share/icons/hicolor/32x32/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-48.png
+    dst: /usr/share/icons/hicolor/48x48/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-64.png
+    dst: /usr/share/icons/hicolor/64x64/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-128.png
+    dst: /usr/share/icons/hicolor/128x128/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-256.png
+    dst: /usr/share/icons/hicolor/256x256/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  - src: ${LATEXO_ROOT}/packaging/icons/png/latexo-512.png
+    dst: /usr/share/icons/hicolor/512x512/apps/codes.tanis.latexo.png
+    expand: true
+    file_info:
+      mode: 0644
+  # deb convention: the license under /usr/share/doc/<name>/.
+  - src: ${LATEXO_ROOT}/LICENSE
+    dst: /usr/share/doc/latexo/LICENSE
+    expand: true
+    file_info:
+      mode: 0644
+    packager: deb
+  - src: ${LATEXO_ROOT}/NOTICE
+    dst: /usr/share/doc/latexo/NOTICE
+    expand: true
+    file_info:
+      mode: 0644
+    packager: deb
+  # rpm convention: /usr/share/licenses/<name>/, flagged as a license file.
+  - src: ${LATEXO_ROOT}/LICENSE
+    dst: /usr/share/licenses/latexo/LICENSE
+    expand: true
+    type: license
+    file_info:
+      mode: 0644
+    packager: rpm
+  - src: ${LATEXO_ROOT}/NOTICE
+    dst: /usr/share/licenses/latexo/NOTICE
+    expand: true
+    type: license
+    file_info:
+      mode: 0644
+    packager: rpm
+
+# Runtime libraries the binary links (libxcb, libxkbcommon, libxkbcommon-x11) or loads with
+# dlopen (wayland-client, wayland-egl, EGL), as Postino's. Vulkan is only a recommendation: wgpu
+# can use it, but the binary does not name it. Names differ between deb and rpm.
+depends:
+  - libxkbcommon0
+  - libxkbcommon-x11-0
+  - libxcb1
+  - libwayland-client0
+  - libwayland-egl1
+  - libegl1
+recommends:
+  - libvulkan1
+# Up to 0.4.1 the package was named latexo: replace it on upgrade. Only those versions, so the
+# unrelated latexo packages of other repositories are left alone.
+replaces:
+  - latexo (<< 0.5.0~)
+conflicts:
+  - latexo (<< 0.5.0~)
+overrides:
+  rpm:
+    replaces:
+      - latexo < 0.5.0
+    conflicts:
+      - latexo < 0.5.0
+    depends:
+      - libxkbcommon
+      - libxkbcommon-x11
+      - libxcb
+      - libwayland-client
+      - libwayland-egl
+      - libglvnd-egl
+    recommends:
+      - vulkan-loader

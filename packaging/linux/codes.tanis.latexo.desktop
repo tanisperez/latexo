@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Latexo
+GenericName=System Monitor
+GenericName[es]=Monitor del sistema
+GenericName[gl]=Monitor do sistema
+GenericName[it]=Monitor di sistema
+Comment=See what your computer is doing: CPU, GPU, memory, disks, network, temperatures and power
+Comment[es]=Mira qué hace tu equipo: CPU, GPU, memoria, discos, red, temperaturas y consumo
+Comment[gl]=Mira que fai o teu equipo: CPU, GPU, memoria, discos, rede, temperaturas e consumo
+Comment[it]=Guarda cosa fa il tuo computer: CPU, GPU, memoria, dischi, rete, temperature e consumi
+Exec=latexo
+Icon=codes.tanis.latexo
+Terminal=false
+Categories=System;Monitor;
+Keywords=system;monitor;cpu;gpu;memory;temperature;process;task manager;
+StartupNotify=true
+StartupWMClass=codes.tanis.latexo
