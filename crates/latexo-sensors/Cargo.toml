@@ -1,0 +1,20 @@
+[package]
+name = "latexo-sensors"
+description = "Reads the machine for Latexo: CPU, memory, disks, network, sensors, GPUs, power and processes. No gpui."
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+latexo-core = { path = "../latexo-core" }
+sysinfo = { workspace = true, features = ["gpu"] }
+log = { workspace = true }
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }
+tempfile = { workspace = true }
+
+[lints]
+workspace = true
