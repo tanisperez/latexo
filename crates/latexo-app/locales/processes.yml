@@ -5,6 +5,16 @@ _version: 2
   es: "%{processes} procesos · %{threads} hilos"
   gl: "%{processes} procesos · %{threads} fíos"
   it: "%{processes} processi · %{threads} thread"
+"processes.count.one":
+  en: "%{count} process"
+  es: "%{count} proceso"
+  gl: "%{count} proceso"
+  it: "%{count} processo"
+"processes.count.other":
+  en: "%{count} processes"
+  es: "%{count} procesos"
+  gl: "%{count} procesos"
+  it: "%{count} processi"
 "processes.search_placeholder":
   en: "Search process or PID"
   es: "Buscar proceso o PID"

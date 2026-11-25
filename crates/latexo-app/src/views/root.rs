@@ -3,7 +3,7 @@
 //! [`Monitor`], and runs the sampling task.
 
 use std::sync::Arc;
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 
 use gpui_kit::assets::IconName;
@@ -55,6 +55,7 @@ pub struct AppView {
     pub update_env: crate::state::update::UpdateEnv,
     content_scroll: ScrollHandle,
     interval_ms: Arc<AtomicU64>,
+    wants_processes: Arc<AtomicBool>,
     _sampling: Task<()>,
     _subscriptions: Vec<Subscription>,
 }
@@ -88,9 +89,12 @@ impl AppView {
             update_env: crate::state::update::UpdateEnv::detect(),
             content_scroll: ScrollHandle::new(),
             interval_ms: Arc::new(AtomicU64::new(interval_ms(&settings_interval))),
+            wants_processes: Arc::new(AtomicBool::new(true)),
             _sampling: Task::ready(()),
             _subscriptions: vec![subscription],
         };
+        view.wants_processes
+            .store(view.screen.shows_processes(), Ordering::Relaxed);
         view._sampling = view.start_sampling(window, cx);
         view.schedule_startup_update_check(cx);
         view
@@ -102,9 +106,10 @@ impl AppView {
     fn start_sampling(&mut self, window: &mut Window, cx: &mut Context<Self>) -> Task<()> {
         let (sender, receiver) = async_channel::bounded::<Message>(4);
         let interval = self.interval_ms.clone();
+        let wants_processes = self.wants_processes.clone();
         let spawned = std::thread::Builder::new()
             .name("latexo-sampler".to_string())
-            .spawn(move || sample_loop(&sender, &interval));
+            .spawn(move || sample_loop(&sender, &interval, &wants_processes));
         if let Err(error) = spawned {
             log::error!("could not start the sampling thread: {error}");
         }
@@ -195,6 +200,8 @@ impl AppView {
         if self.screen != screen {
             log::debug!("screen: {}", screen.code());
             self.screen = screen;
+            self.wants_processes
+                .store(screen.shows_processes(), Ordering::Relaxed);
             self.content_scroll.set_offset(point(px(0.0), px(0.0)));
             cx.notify();
         }
@@ -606,12 +613,15 @@ impl AppView {
                 uptime = format::uptime(sample.uptime_secs)
             )
             .into_owned(),
-            (Screen::Processes, _, Some(sample)) => t!(
-                "processes.subtitle",
-                processes = format::integer(sample.processes.len()),
-                threads = format::integer(sample.thread_count())
-            )
-            .into_owned(),
+            (Screen::Processes, _, Some(sample)) => match sample.thread_count() {
+                0 => crate::state::locale::plural("processes.count", sample.processes.len()),
+                threads => t!(
+                    "processes.subtitle",
+                    processes = format::integer(sample.processes.len()),
+                    threads = format::integer(threads)
+                )
+                .into_owned(),
+            },
             (Screen::Cpu, Some(info), _) => {
                 let cores = info.physical_cores.unwrap_or(info.logical_cores);
                 t!(
@@ -793,8 +803,13 @@ fn interval_ms(interval: &crate::state::settings::Interval) -> u64 {
 }
 
 /// The sampling thread: opens the sampler, then reads the machine once per interval and sends
-/// the sample, until the window drops the receiver.
-fn sample_loop(sender: &async_channel::Sender<Message>, interval: &AtomicU64) {
+/// the sample, until the window drops the receiver. The processes, the most expensive part, are
+/// read on every sample only while the screen shown needs them.
+fn sample_loop(
+    sender: &async_channel::Sender<Message>,
+    interval: &AtomicU64,
+    wants_processes: &AtomicBool,
+) {
     let mut sampler = match Sampler::new() {
         Ok(sampler) => sampler,
         Err(error) => {
@@ -811,7 +826,7 @@ fn sample_loop(sender: &async_channel::Sender<Message>, interval: &AtomicU64) {
     let mut first = true;
     loop {
         let started = Instant::now();
-        let sample = sampler.sample();
+        let sample = sampler.sample_with(wants_processes.load(Ordering::Relaxed));
         let capabilities = first.then(|| sampler.capabilities(&sample));
         first = false;
         if sender

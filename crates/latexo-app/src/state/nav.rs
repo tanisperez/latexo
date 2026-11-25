@@ -83,6 +83,20 @@ impl Screen {
             .find(|screen| screen.code() == code)
     }
 
+    /// Whether the screen lists processes (the busiest ones, the top users of memory, disk or
+    /// GPU), so the sampler reads them on every sample.
+    pub fn shows_processes(self) -> bool {
+        matches!(
+            self,
+            Screen::Overview
+                | Screen::Processes
+                | Screen::Cpu
+                | Screen::Memory
+                | Screen::Disk
+                | Screen::Gpu
+        )
+    }
+
     /// Whether the header shows the chart style and range selectors.
     pub fn has_charts(self) -> bool {
         !matches!(

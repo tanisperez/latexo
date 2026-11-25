@@ -28,6 +28,17 @@ pub fn sensor_kind(label: &str) -> SensorKind {
     }
 }
 
+/// Whether a sensor is slow to read: an NVMe drive, an ACPI zone or a laptop's embedded
+/// controller, which answer in 0.5 to 2.5 ms each instead of microseconds.
+pub fn is_slow(label: &str) -> bool {
+    let lower = label.to_ascii_lowercase();
+    let driver = lower.split_whitespace().next().unwrap_or_default();
+    matches!(
+        driver,
+        "nvme" | "drivetemp" | "acpitz" | "thinkpad" | "dell_smm" | "asus"
+    ) || lower.contains("thermalzone")
+}
+
 /// The physical core id of a `coretemp Core N` label.
 pub fn core_id(label: &str) -> Option<u32> {
     let lower = label.to_ascii_lowercase();
@@ -54,6 +65,13 @@ mod tests {
         assert_eq!(sensor_kind("acpitz temp1"), SensorKind::Board);
         assert_eq!(sensor_kind("iwlwifi_1 temp1"), SensorKind::Other);
         assert_eq!(sensor_kind("ACPI\\ThermalZone\\TZ00_0"), SensorKind::Board);
+    }
+
+    #[test]
+    fn slow_sensors_are_the_drives_and_firmware_ones() {
+        assert!(is_slow("nvme Composite WD PC SN740"));
+        assert!(is_slow("acpitz temp1"));
+        assert!(!is_slow("coretemp Core 4"));
     }
 
     #[test]

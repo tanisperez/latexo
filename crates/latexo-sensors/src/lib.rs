@@ -24,6 +24,15 @@ use sysinfo::{
     ProcessRefreshKind, ProcessesToUpdate, RefreshKind, System, Uid, UpdateKind, Users,
 };
 
+/// How often the threads of each process are counted, in process refreshes.
+const THREADS_EVERY: u64 = 5;
+/// How often the slow temperature sensors are read, in samples.
+const SLOW_SENSORS_EVERY: u64 = 5;
+/// How often the list of temperature sensors is read again, in samples.
+const SENSOR_LIST_EVERY: u64 = 60;
+/// How often the processes are read while no screen shows them, in samples.
+const IDLE_PROCESSES_EVERY: u64 = 10;
+
 /// What the platform can read, for the "Sensors" section of Settings.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Capabilities {
@@ -58,6 +67,10 @@ pub struct Sampler {
     core_ids: Vec<Option<u32>>,
     disk_read_total: u64,
     disk_written_total: u64,
+    samples: u64,
+    process_refreshes: u64,
+    last_processes: Option<Instant>,
+    cached_processes: Vec<ProcessInfo>,
     net_received_session: u64,
     net_sent_session: u64,
 }
@@ -115,6 +128,10 @@ impl Sampler {
             core_ids,
             disk_read_total: 0,
             disk_written_total: 0,
+            samples: 0,
+            process_refreshes: 0,
+            last_processes: None,
+            cached_processes: Vec::new(),
             net_received_session: 0,
             net_sent_session: 0,
         };
@@ -165,34 +182,73 @@ impl Sampler {
         }
     }
 
+    /// Refreshes the processes. The threads of each process (a third of the cost on Linux, where
+    /// sysinfo lists every thread) only every [`THREADS_EVERY`] refreshes.
     fn refresh_processes(&mut self) {
-        self.system.refresh_processes_specifics(
-            ProcessesToUpdate::All,
-            true,
-            ProcessRefreshKind::nothing()
-                .with_cpu()
-                .with_memory()
-                .with_disk_usage()
-                .with_tasks()
-                .with_gpu_usage()
-                .with_exe(UpdateKind::OnlyIfNotSet)
-                .with_user(UpdateKind::OnlyIfNotSet),
-        );
+        let kind = ProcessRefreshKind::nothing()
+            .with_cpu()
+            .with_memory()
+            .with_disk_usage()
+            .with_gpu_usage()
+            .with_exe(UpdateKind::OnlyIfNotSet)
+            .with_user(UpdateKind::OnlyIfNotSet);
+        let kind = if self.process_refreshes.is_multiple_of(THREADS_EVERY) {
+            kind.with_tasks()
+        } else {
+            kind
+        };
+        self.process_refreshes += 1;
+        self.system
+            .refresh_processes_specifics(ProcessesToUpdate::All, true, kind);
     }
 
-    /// Reads everything once. The rates cover the time since the previous call.
+    /// Refreshes the temperature sensors. Each one is read on its own, without listing the
+    /// devices again; the slow ones (an NVMe drive answers in about 2 ms, an ACPI zone or a
+    /// laptop's embedded controller in 0.5 to 2 ms) only every [`SLOW_SENSORS_EVERY`] samples.
+    /// The list itself is read again every [`SENSOR_LIST_EVERY`] samples, for a drive plugged in.
+    fn refresh_sensors(&mut self) {
+        let Some(components) = self.components.as_mut() else {
+            return;
+        };
+        if self.samples.is_multiple_of(SENSOR_LIST_EVERY) {
+            components.refresh(true);
+            return;
+        }
+        let slow_turn = self.samples.is_multiple_of(SLOW_SENSORS_EVERY);
+        for component in components.iter_mut() {
+            if slow_turn || !classify::is_slow(component.label()) {
+                component.refresh();
+            }
+        }
+    }
+
+    /// Reads everything once, the processes included. The rates cover the time since the
+    /// previous call.
     pub fn sample(&mut self) -> Sample {
+        self.sample_with(true)
+    }
+
+    /// Reads everything once. Without `processes`, the process list (the most expensive part)
+    /// is read only every [`IDLE_PROCESSES_EVERY`] samples and the previous one is repeated in
+    /// between: the app asks for it only while a screen shows processes.
+    pub fn sample_with(&mut self, processes: bool) -> Sample {
         let now = Instant::now();
         let secs = self
             .last
             .replace(now)
             .map_or(1.0, |last| now.duration_since(last).as_secs_f64())
             .max(0.001);
+        let read_processes = processes
+            || self.last_processes.is_none()
+            || self.samples.is_multiple_of(IDLE_PROCESSES_EVERY);
+        self.samples += 1;
 
         self.system
             .refresh_cpu_specifics(CpuRefreshKind::everything());
         self.system.refresh_memory();
-        self.refresh_processes();
+        if read_processes {
+            self.refresh_processes();
+        }
         if let Some(disks) = self.disks.as_mut() {
             disks.refresh_specifics(
                 true,
@@ -202,14 +258,23 @@ impl Sampler {
         if let Some(networks) = self.networks.as_mut() {
             networks.refresh(true);
         }
-        if let Some(components) = self.components.as_mut() {
-            components.refresh(true);
-        }
+        self.refresh_sensors();
         if let Some(gpus) = self.gpus.as_mut() {
             gpus.refresh(true);
         }
 
-        let processes = self.processes(secs);
+        let processes = if read_processes {
+            let process_secs = self
+                .last_processes
+                .replace(now)
+                .map_or(secs, |last| now.duration_since(last).as_secs_f64())
+                .max(0.001);
+            let list = self.processes(process_secs);
+            self.cached_processes = list.clone();
+            list
+        } else {
+            self.cached_processes.clone()
+        };
         let gpus = self.gpus();
         let (sensors, core_temps) = self.sensors();
         Sample {
