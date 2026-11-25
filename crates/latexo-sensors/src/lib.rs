@@ -394,7 +394,7 @@ impl Sampler {
                 })
             })
             .collect();
-        sensors.sort_by(|a, b| a.kind.cmp(&b.kind).then(a.label.cmp(&b.label)));
+        sensors.sort_by(|a, b| a.kind.cmp(&b.kind).then(natural_cmp(&a.label, &b.label)));
         (sensors, core_temps)
     }
 
@@ -529,6 +529,21 @@ fn full_name(name: &str, exe: Option<&str>) -> String {
     }
 }
 
+/// Compares labels with their numbers as numbers: `Core 4` before `Core 10`.
+fn natural_cmp(a: &str, b: &str) -> std::cmp::Ordering {
+    fn split(text: &str) -> (&str, Option<u64>) {
+        let digits = text.len() - text.trim_end_matches(|c: char| c.is_ascii_digit()).len();
+        let (head, tail) = text.split_at(text.len() - digits);
+        (head, tail.parse().ok())
+    }
+    let (a_head, a_number) = split(a);
+    let (b_head, b_number) = split(b);
+    a_head
+        .cmp(b_head)
+        .then(a_number.cmp(&b_number))
+        .then(a.cmp(b))
+}
+
 fn is_loopback(name: &str) -> bool {
     name == "lo" || name.starts_with("Loopback")
 }
@@ -587,6 +602,13 @@ mod tests {
         );
         assert_eq!(full_name("bash", Some("bash")), "bash");
         assert_eq!(full_name("Web Content", Some("firefox")), "Web Content");
+    }
+
+    #[test]
+    fn labels_sort_with_their_numbers() {
+        let mut labels = vec!["Core 10", "Core 4", "Composite", "Core 0"];
+        labels.sort_by(|a, b| natural_cmp(a, b));
+        assert_eq!(labels, vec!["Composite", "Core 0", "Core 4", "Core 10"]);
     }
 
     #[test]

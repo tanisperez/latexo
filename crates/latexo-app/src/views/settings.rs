@@ -228,7 +228,7 @@ impl AppView {
             .range(*PRICE_RANGE.start(), *PRICE_RANGE.end())
             .format({
                 let currency = settings.currency.clone();
-                move |value| format!("{} {currency}/kWh", format::decimal(f64::from(value), 2))
+                move |value| format!("{} {currency}", format::decimal(f64::from(value), 2))
             })
             .on_change({
                 let weak = weak.clone();

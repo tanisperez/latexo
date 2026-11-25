@@ -48,7 +48,7 @@ fn threshold_scale(metric: Metric) -> (f32, f32, f32, f32) {
 }
 
 /// The durations a rule can wait, in seconds.
-const DURATIONS: [u32; 5] = [0, 10, 30, 60, 300];
+const DURATIONS: [u32; 6] = [0, 10, 30, 60, 120, 300];
 
 fn duration_label(secs: u32) -> String {
     match secs {

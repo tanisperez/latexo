@@ -71,21 +71,14 @@ impl AppView {
             .gap(px(GAP))
             .child(card(palette).child(header))
             .child(
-                h_flex()
-                    .items_start()
-                    .gap(px(GAP))
-                    .child(
-                        card(palette)
-                            .flex_1()
-                            .child(card_title(t!("about.machine")))
-                            .child(stat_rows(machine, palette)),
-                    )
-                    .child(
-                        card(palette)
-                            .flex_1()
-                            .child(card_title(t!("about.files")))
-                            .child(stat_rows(files, palette)),
-                    ),
+                card(palette)
+                    .child(card_title(t!("about.machine")))
+                    .child(stat_rows(machine, palette)),
+            )
+            .child(
+                card(palette)
+                    .child(card_title(t!("about.files")))
+                    .child(stat_rows(files, palette)),
             )
             .child(
                 card(palette)

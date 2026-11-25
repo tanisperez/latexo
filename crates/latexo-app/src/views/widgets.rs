@@ -183,15 +183,15 @@ pub fn stat_rows(rows: Vec<(String, String)>, palette: &Palette) -> Div {
             })
             .child(
                 div()
-                    .min_w_0()
-                    .truncate()
+                    .flex_none()
                     .text_size(px(TEXT_ROW))
                     .text_color(palette.fg_muted)
                     .child(key),
             )
             .child(
                 div()
-                    .flex_none()
+                    .min_w_0()
+                    .truncate()
                     .font_family(palette_mono())
                     .text_size(px(TEXT_SM))
                     .child(value),
