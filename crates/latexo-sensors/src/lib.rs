@@ -71,6 +71,7 @@ pub struct Sampler {
     process_refreshes: u64,
     last_processes: Option<Instant>,
     cached_processes: Vec<ProcessInfo>,
+    cpu_times_ms: HashMap<u32, u64>,
     net_received_session: u64,
     net_sent_session: u64,
 }
@@ -132,6 +133,7 @@ impl Sampler {
             process_refreshes: 0,
             last_processes: None,
             cached_processes: Vec::new(),
+            cpu_times_ms: HashMap::new(),
             net_received_session: 0,
             net_sent_session: 0,
         };
@@ -471,6 +473,8 @@ impl Sampler {
             .system
             .processes()
             .values()
+            // Threads share their process's GPU files and would count it once per thread.
+            .filter(|process| process.thread_kind().is_none())
             .filter_map(|process| {
                 let usage = process.gpu_usage()?;
                 (usage > 0.0).then(|| (process.pid().as_u32(), usage / 100.0))
@@ -486,9 +490,24 @@ impl Sampler {
                 };
                 let mut processes = if single { busy.clone() } else { Vec::new() };
                 processes.sort_by(|a, b| b.1.total_cmp(&a.1));
+                // Without a reading of the device (Intel on Linux), the busy share of every
+                // process using it added up: the user's processes only, which is where the work
+                // of a desktop is.
+                let usage = gpu
+                    .usage()
+                    .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
+                    .or_else(|| {
+                        (single && !processes.is_empty()).then(|| {
+                            processes
+                                .iter()
+                                .map(|(_, usage)| usage)
+                                .sum::<f32>()
+                                .min(1.0)
+                        })
+                    });
                 GpuSample {
                     name,
-                    usage: gpu.usage().map(|usage| (usage / 100.0).clamp(0.0, 1.0)),
+                    usage,
                     engines: Vec::new(),
                     memory_used: gpu.used_memory(),
                     memory_total: gpu.total_memory(),
@@ -539,7 +558,12 @@ impl Sampler {
                     parent: process.parent().map(Pid::as_u32),
                     name: process_name(process),
                     user,
-                    cpu_percent: process.cpu_usage(),
+                    cpu_percent: process_cpu(
+                        self.cpu_times_ms.get(&process.pid().as_u32()).copied(),
+                        process.accumulated_cpu_time(),
+                        secs,
+                    )
+                    .unwrap_or_else(|| process.cpu_usage()),
                     memory: process.memory(),
                     threads: process.tasks().map(|tasks| tasks.len().max(1) as u32),
                     disk_read_per_sec: disk.read_bytes as f64 / secs,
@@ -547,6 +571,13 @@ impl Sampler {
                     own: self.own_user.is_some() && process.user_id() == self.own_user.as_ref(),
                 }
             })
+            .collect();
+        self.cpu_times_ms = self
+            .system
+            .processes()
+            .values()
+            .filter(|process| process.thread_kind().is_none())
+            .map(|process| (process.pid().as_u32(), process.accumulated_cpu_time()))
             .collect();
         if unknown_user && let Some(users) = self.users.as_mut() {
             users.refresh();
@@ -569,6 +600,16 @@ fn user_names(users: Option<&Users>) -> HashMap<Uid, String> {
         .flat_map(|users| users.iter())
         .map(|user| (user.id().clone(), user.name().to_string()))
         .collect()
+}
+
+/// The CPU of a process in percent of one logical processor, from its CPU time (milliseconds)
+/// now and at the previous refresh `secs` seconds ago. sysinfo's own figure divides by the time
+/// since the last refresh of the whole CPU, which is wrong when the processes are not read on
+/// every sample. `None` for a process seen for the first time.
+fn process_cpu(before_ms: Option<u64>, now_ms: u64, secs: f64) -> Option<f32> {
+    let before = before_ms?;
+    let busy = now_ms.saturating_sub(before) as f64 / 1000.0;
+    Some((busy / secs * 100.0) as f32)
 }
 
 /// The name of a process. Linux cuts the name it reports at 15 characters (`systemd-timesyn`):
@@ -674,6 +715,13 @@ mod tests {
         let mut labels = vec!["Core 10", "Core 4", "Composite", "Core 0"];
         labels.sort_by(|a, b| natural_cmp(a, b));
         assert_eq!(labels, vec!["Composite", "Core 0", "Core 4", "Core 10"]);
+    }
+
+    #[test]
+    fn process_cpu_is_cpu_time_over_wall_time() {
+        assert_eq!(process_cpu(None, 500, 1.0), None);
+        assert_eq!(process_cpu(Some(1000), 3000, 2.0), Some(100.0));
+        assert_eq!(process_cpu(Some(1000), 1250, 1.0), Some(25.0));
     }
 
     #[test]
