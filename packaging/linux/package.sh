@@ -103,7 +103,7 @@ install -Dm644 "$root/NOTICE" "$pkg/usr/share/licenses/latexo/NOTICE"
     echo "pkgname = latexo"
     echo "pkgbase = latexo"
     echo "pkgver = ${version//-/}-1"
-    echo "pkgdesc = A fast, lightweight text editor"
+    echo "pkgdesc = A native system monitor"
     echo "url = https://github.com/tanisperez/latexo"
     echo "builddate = ${SOURCE_DATE_EPOCH:-$(date +%s)}"
     echo "packager = Estanislao Pérez Nartallo <tanisperez@gmail.com>"
@@ -114,9 +114,6 @@ install -Dm644 "$root/NOTICE" "$pkg/usr/share/licenses/latexo/NOTICE"
         echo "depend = $dep"
     done
     echo "optdepend = vulkan-icd-loader: Vulkan renderer"
-    # Up to 0.4.1 the package was named latexo. Only those versions: the AUR latexo is another app.
-    echo "conflict = latexo<0.5.0"
-    echo "replaces = latexo<0.5.0"
 } >"$pkg/.PKGINFO"
 owner=(--uid 0 --gid 0 --uname root --gname root)
 (

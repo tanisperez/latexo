@@ -2,7 +2,7 @@
 
 ## Manifest
 
-`latexo.exe` is a console subsystem binary, as Postino's (#282), so shells wait for its commands.
+`latexo.exe` is a console subsystem binary, as Postino's (Postino #282), so shells wait for its commands.
 Right after the release build, `merge-manifest.ps1` merges `console.manifest`
 (`consoleAllocationPolicy` `detached`, so a double click opens no console window on Windows 11
 24H2 or later) into the manifest gpui embeds, with `mt.exe` from the Windows SDK. It runs before

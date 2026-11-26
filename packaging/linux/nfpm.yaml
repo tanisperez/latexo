@@ -120,18 +120,8 @@ depends:
   - libegl1
 recommends:
   - libvulkan1
-# Up to 0.4.1 the package was named latexo: replace it on upgrade. Only those versions, so the
-# unrelated latexo packages of other repositories are left alone.
-replaces:
-  - latexo (<< 0.5.0~)
-conflicts:
-  - latexo (<< 0.5.0~)
 overrides:
   rpm:
-    replaces:
-      - latexo < 0.5.0
-    conflicts:
-      - latexo < 0.5.0
     depends:
       - libxkbcommon
       - libxkbcommon-x11
