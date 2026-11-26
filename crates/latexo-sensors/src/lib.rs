@@ -509,6 +509,12 @@ impl Sampler {
             })
             .collect();
         let single = gpus.len() == 1;
+        // Whether the processes report their GPU use at all, even when none uses it right now.
+        let reported = self
+            .system
+            .processes()
+            .values()
+            .any(|process| process.gpu_usage().is_some());
         gpus.iter()
             .map(|gpu| {
                 let name = match (gpu.vendor(), gpu.model()) {
@@ -525,7 +531,7 @@ impl Sampler {
                     .usage()
                     .map(|usage| (usage / 100.0).clamp(0.0, 1.0))
                     .or_else(|| {
-                        (single && !processes.is_empty()).then(|| {
+                        (single && reported).then(|| {
                             processes
                                 .iter()
                                 .map(|(_, usage)| usage)

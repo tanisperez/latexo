@@ -23,10 +23,14 @@ starts in a moment and stays light while it watches.
   chart per core or a map of the processor.
 - **Processes**: sort by any column, filter yours or the system's, search by name or PID, end
   a process or its whole tree.
-- **Charts your way**: line, bars, steps or dots, over the last minute or the last hour.
+- **Charts your way**: line, bars, steps or dots, from the last minute to the last week (minute
+  averages kept on this computer for a day or a week).
 - **Alerts**: rules on temperatures, usage, disks, power and fans, with how long they must last.
 - **Energy**: the measured power added up into kWh today and this month, with its cost.
+- **Floating pill**: CPU, GPU, memory, power and temperature always in sight, above every window.
 - **Settings inside the window**, in English, Spanish, Galician and Italian, light or dark.
+- **Keyboard**: `Ctrl+F` searches the processes, `Delete` ends the selected one, `Ctrl+,` opens
+  Settings.
 
 ## Install
 

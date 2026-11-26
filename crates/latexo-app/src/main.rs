@@ -5,6 +5,7 @@
 // `latexo --help` and read its exit code. The manifest merged at release keeps Windows 11 from
 // opening a console for a double click, and `detach_from_console` frees the terminal.
 
+mod actions;
 mod state;
 mod theme;
 mod views;
@@ -70,6 +71,7 @@ fn main() -> ExitCode {
     app.run(move |cx| {
         window::init(cx, &IDENTITY);
         theme::install(cx);
+        actions::bind_keys(cx);
         let sizes = window::WindowSizes {
             min: MIN_WINDOW,
             ..window::WindowSizes::default()

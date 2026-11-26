@@ -56,6 +56,7 @@ pub struct AppView {
     /// The floating pill's window, while it is open.
     pub pill: Option<AnyWindowHandle>,
     content_scroll: ScrollHandle,
+    focus_handle: FocusHandle,
     interval_ms: Arc<AtomicU64>,
     wants_processes: Arc<AtomicBool>,
     _sampling: Task<()>,
@@ -92,6 +93,7 @@ impl AppView {
             update_env: crate::state::update::UpdateEnv::detect(),
             pill: None,
             content_scroll: ScrollHandle::new(),
+            focus_handle: cx.focus_handle(),
             interval_ms: Arc::new(AtomicU64::new(interval_ms(&settings_interval))),
             wants_processes: Arc::new(AtomicBool::new(true)),
             _sampling: Task::ready(()),
@@ -99,6 +101,7 @@ impl AppView {
         };
         view.wants_processes
             .store(view.screen.shows_processes(), Ordering::Relaxed);
+        view.focus_handle.focus(window, cx);
         view._sampling = view.start_sampling(window, cx);
         view.schedule_startup_update_check(cx);
         if view.settings.floating_pill {
@@ -247,6 +250,12 @@ impl AppView {
         self.settings.theme == ThemeChoice::System
     }
 
+    /// Gives the keyboard back to the window, out of the search box, so `Delete` ends the
+    /// selected process instead of deleting text.
+    pub fn focus_window(&self, window: &mut Window, cx: &mut App) {
+        self.focus_handle.focus(window, cx);
+    }
+
     /// Writes the energy account and the minute history, when the window closes.
     pub fn on_close(&self) {
         self.monitor.save_energy();
@@ -287,8 +296,32 @@ impl Render for AppView {
                 .child(ScrollbarOverlay::new(&scroll))
                 .into_any_element()
         };
+        let processes = self.screen == Screen::Processes;
         v_flex()
             .size_full()
+            .track_focus(&self.focus_handle)
+            .key_context(if processes {
+                crate::actions::PROCESSES_CONTEXT
+            } else {
+                "Latexo"
+            })
+            .on_action(
+                cx.listener(|view, _: &crate::actions::FocusSearch, window, cx| {
+                    view.show(Screen::Processes, cx);
+                    view.search
+                        .update(cx, |search, cx| search.focus(window, cx));
+                }),
+            )
+            .on_action(
+                cx.listener(|view, _: &crate::actions::EndProcess, window, cx| {
+                    view.confirm_end(false, window, cx);
+                }),
+            )
+            .on_action(
+                cx.listener(|view, _: &crate::actions::OpenSettings, _, cx| {
+                    view.show(Screen::Settings, cx);
+                }),
+            )
             .bg(palette.bg)
             .text_color(palette.fg)
             .text_size(px(13.0))

@@ -415,8 +415,9 @@ impl AppView {
                 ProcessColumn::Disk,
                 mono(format::rate(process.disk_per_sec()), true),
             ))
-            .on_click(cx.listener(move |view, _, _, cx| {
+            .on_click(cx.listener(move |view, _, window, cx| {
                 view.selected_pid = Some(pid);
+                view.focus_window(window, cx);
                 cx.notify();
             }))
             .context_menu({
