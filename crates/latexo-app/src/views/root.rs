@@ -63,6 +63,7 @@ pub struct AppView {
     focus_handle: FocusHandle,
     interval_ms: Arc<AtomicU64>,
     wants_processes: Arc<AtomicBool>,
+    wants_gpu_engines: Arc<AtomicBool>,
     _sampling: Task<()>,
     _subscriptions: Vec<Subscription>,
 }
@@ -102,11 +103,14 @@ impl AppView {
             focus_handle: cx.focus_handle(),
             interval_ms: Arc::new(AtomicU64::new(interval_ms(&settings_interval))),
             wants_processes: Arc::new(AtomicBool::new(true)),
+            wants_gpu_engines: Arc::new(AtomicBool::new(false)),
             _sampling: Task::ready(()),
             _subscriptions: vec![subscription],
         };
         view.wants_processes
             .store(view.screen.shows_processes(), Ordering::Relaxed);
+        view.wants_gpu_engines
+            .store(view.screen == Screen::Gpu, Ordering::Relaxed);
         view.focus_handle.focus(window, cx);
         view._sampling = view.start_sampling(window, cx);
         view.schedule_startup_update_check(cx);
@@ -128,10 +132,10 @@ impl AppView {
     fn start_sampling(&mut self, window: &mut Window, cx: &mut Context<Self>) -> Task<()> {
         let (sender, receiver) = async_channel::bounded::<Message>(4);
         let interval = self.interval_ms.clone();
-        let wants_processes = self.wants_processes.clone();
+        let wants = (self.wants_processes.clone(), self.wants_gpu_engines.clone());
         let spawned = std::thread::Builder::new()
             .name("latexo-sampler".to_string())
-            .spawn(move || sample_loop(&sender, &interval, &wants_processes));
+            .spawn(move || sample_loop(&sender, &interval, &wants.0, &wants.1));
         if let Err(error) = spawned {
             log::error!("could not start the sampling thread: {error}");
         }
@@ -239,6 +243,8 @@ impl AppView {
             self.screen = screen;
             self.wants_processes
                 .store(screen.shows_processes(), Ordering::Relaxed);
+            self.wants_gpu_engines
+                .store(screen == Screen::Gpu, Ordering::Relaxed);
             self.content_scroll.set_offset(point(px(0.0), px(0.0)));
             cx.notify();
         }
@@ -902,6 +908,7 @@ fn sample_loop(
     sender: &async_channel::Sender<Message>,
     interval: &AtomicU64,
     wants_processes: &AtomicBool,
+    wants_gpu_engines: &AtomicBool,
 ) {
     let mut sampler = match Sampler::new() {
         Ok(sampler) => sampler,
@@ -919,7 +926,10 @@ fn sample_loop(
     let mut count: u64 = 0;
     loop {
         let started = Instant::now();
-        let sample = sampler.sample_with(wants_processes.load(Ordering::Relaxed));
+        let sample = sampler.sample_with(
+            wants_processes.load(Ordering::Relaxed),
+            wants_gpu_engines.load(Ordering::Relaxed),
+        );
         // Again now and then: some readings only show up later (the GPU usage of its processes).
         let capabilities = count
             .is_multiple_of(CAPABILITIES_EVERY)

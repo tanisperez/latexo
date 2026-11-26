@@ -100,6 +100,6 @@ fn main() {
         let _ = sampler.sample();
     });
     time("sample without processes", runs, || {
-        let _ = sampler.sample_with(false);
+        let _ = sampler.sample_with(false, false);
     });
 }

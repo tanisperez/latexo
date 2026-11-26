@@ -35,6 +35,46 @@ _version: 2
   es: "Procesos que usan la GPU"
   gl: "Procesos que usan a GPU"
   it: "Processi che usano la GPU"
+"gpu.engines":
+  en: "GPU engines"
+  es: "Motores de la GPU"
+  gl: "Motores da GPU"
+  it: "Motori della GPU"
+"gpu.engine_3d":
+  en: "3D"
+  es: "3D"
+  gl: "3D"
+  it: "3D"
+"gpu.engine_video":
+  en: "Video"
+  es: "Vídeo"
+  gl: "Vídeo"
+  it: "Video"
+"gpu.engine_video_enhance":
+  en: "Video processing"
+  es: "Procesado de vídeo"
+  gl: "Procesado de vídeo"
+  it: "Elaborazione video"
+"gpu.engine_copy":
+  en: "Copy"
+  es: "Copia"
+  gl: "Copia"
+  it: "Copia"
+"gpu.engine_compute":
+  en: "Compute"
+  es: "Cálculo"
+  gl: "Cálculo"
+  it: "Calcolo"
+"gpu.engine_decode":
+  en: "Video decode"
+  es: "Decodificación de vídeo"
+  gl: "Descodificación de vídeo"
+  it: "Decodifica video"
+"gpu.engine_encode":
+  en: "Video encode"
+  es: "Codificación de vídeo"
+  gl: "Codificación de vídeo"
+  it: "Codifica video"
 "gpu.model":
   en: "Model"
   es: "Modelo"

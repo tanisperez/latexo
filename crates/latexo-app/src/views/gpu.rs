@@ -14,9 +14,23 @@ use crate::theme::metrics::{GAP, SMALL_CHART_HEIGHT, TEXT_AXIS, VALUE_TEXT_SIZE_
 use super::chart::Chart;
 use super::root::AppView;
 use super::widgets::{
-    big_value, card, card_header, card_title, chart_well, empty_line, muted, name_rows, note,
-    stat_rows,
+    bar_row, big_value, card, card_header, card_title, chart_well, empty_line, muted, name_rows,
+    note, stat_rows,
 };
+
+/// The name of a GPU engine as the driver calls it (`render`, `video`, `copy`).
+fn engine_name(engine: &str) -> String {
+    match engine {
+        "render" | "gfx" => t!("gpu.engine_3d").into_owned(),
+        "video" => t!("gpu.engine_video").into_owned(),
+        "video-enhance" => t!("gpu.engine_video_enhance").into_owned(),
+        "copy" => t!("gpu.engine_copy").into_owned(),
+        "compute" => t!("gpu.engine_compute").into_owned(),
+        "dec" => t!("gpu.engine_decode").into_owned(),
+        "enc" => t!("gpu.engine_encode").into_owned(),
+        other => other.to_string(),
+    }
+}
 
 /// One measure card: icon, title, scale, value, the line beside it and its chart.
 struct Measure {
@@ -191,7 +205,28 @@ impl AppView {
                 format::frequency(u64::from(mhz)),
             ));
         }
-        let mut lower = h_flex().items_start().gap(px(GAP)).child(
+        let mut lower = h_flex().items_start().gap(px(GAP));
+        if !gpu.engines.is_empty() {
+            lower = lower.child(
+                card(palette)
+                    .flex_1()
+                    .child(card_title(t!("gpu.engines")).mb(px(12.0)))
+                    .child(
+                        v_flex()
+                            .gap(px(8.0))
+                            .children(gpu.engines.iter().map(|engine| {
+                                bar_row(
+                                    engine_name(&engine.name),
+                                    format::percent(engine.usage, 0),
+                                    engine.usage,
+                                    palette.accent,
+                                    palette,
+                                )
+                            })),
+                    ),
+            );
+        }
+        lower = lower.child(
             card(palette)
                 .flex_1()
                 .child(card_title(t!("gpu.processes")))

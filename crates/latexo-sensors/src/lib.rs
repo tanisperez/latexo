@@ -100,6 +100,7 @@ pub struct Sampler {
     last_processes: Option<Instant>,
     cached_processes: Vec<ProcessInfo>,
     cpu_times_ms: HashMap<u32, u64>,
+    gpu_engines: linux::GpuEngines,
     net_received_session: u64,
     net_sent_session: u64,
 }
@@ -162,6 +163,7 @@ impl Sampler {
             last_processes: None,
             cached_processes: Vec::new(),
             cpu_times_ms: HashMap::new(),
+            gpu_engines: linux::GpuEngines::default(),
             net_received_session: 0,
             net_sent_session: 0,
         };
@@ -255,13 +257,14 @@ impl Sampler {
     /// Reads everything once, the processes included. The rates cover the time since the
     /// previous call.
     pub fn sample(&mut self) -> Sample {
-        self.sample_with(true)
+        self.sample_with(true, false)
     }
 
     /// Reads everything once. Without `processes`, the process list (the most expensive part)
     /// is read only every [`IDLE_PROCESSES_EVERY`] samples and the previous one is repeated in
-    /// between: the app asks for it only while a screen shows processes.
-    pub fn sample_with(&mut self, processes: bool) -> Sample {
+    /// between: the app asks for it only while a screen shows processes. With `gpu_engines`, the
+    /// busy share of each GPU engine is read too (Linux), for the GPU screen.
+    pub fn sample_with(&mut self, processes: bool, gpu_engines: bool) -> Sample {
         let now = Instant::now();
         let secs = self
             .last
@@ -305,7 +308,18 @@ impl Sampler {
         } else {
             self.cached_processes.clone()
         };
-        let gpus = self.gpus();
+        let mut gpus = self.gpus();
+        if gpu_engines && cfg!(target_os = "linux") {
+            let engines = self.gpu_engines.read(&self.proc);
+            if let [gpu] = gpus.as_mut_slice() {
+                gpu.engines = engines
+                    .into_iter()
+                    .map(|(name, usage)| latexo_core::GpuEngine { name, usage })
+                    .collect();
+            }
+        } else {
+            self.gpu_engines.reset();
+        }
         let (sensors, core_temps) = self.sensors();
         Sample {
             elapsed_secs: now.duration_since(self.started).as_secs_f64(),

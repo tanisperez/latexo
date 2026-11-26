@@ -51,7 +51,8 @@ returns one `Sample` whose rates cover the time since the previous call.
 | Fans | `hwmon` `fan*_input` | none without a board driver |
 | Package power | `powercap` `intel-rapl:0` (root only on most systems) | none without a driver |
 | Battery | `power_supply` (charge, power, mains) | `starship-battery` |
-| GPUs, usage per process | sysinfo (NVML, Vulkan, `gpu_busy_percent`) | sysinfo (performance counters) |
+| GPUs, usage per process | sysinfo (NVML, Vulkan, `gpu_busy_percent`); without a device reading, the processes' share added up | sysinfo (performance counters) |
+| GPU engines (3D, video, copy) | the DRM `fdinfo` of the processes this user can read, only on the GPU screen | none |
 | Processes | sysinfo; kernel threads left out; names cut at 15 characters take the executable's name | sysinfo |
 
 `end_processes` ends processes by PID: `SIGTERM` on Linux, `TerminateProcess` on Windows.

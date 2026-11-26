@@ -3,6 +3,7 @@
 //! kernel split of the CPU time (`/proc/stat`) and which physical core each logical processor is
 //! (`topology/core_id`). Every reader takes the root folder, so the tests point it at fixtures.
 
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
@@ -183,6 +184,150 @@ pub fn core_ids(sys: &Path, logical: usize) -> Vec<Option<u32>> {
         .collect()
 }
 
+/// The busy time of each engine of one DRM client, from one `fdinfo` file: its client id and
+/// `(engine, nanoseconds)`, plus the capacity of the engines that have more than one unit.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct DrmClient {
+    /// The client id; several files (threads, duplicated descriptors) can show the same client.
+    pub id: u64,
+    /// Busy nanoseconds per engine since the client started.
+    pub engines: Vec<(String, u64)>,
+    /// Units per engine, for the engines with more than one.
+    pub capacity: Vec<(String, u32)>,
+}
+
+/// Reads the DRM client of an `fdinfo` file, `None` when it is not one.
+pub fn parse_fdinfo(text: &str) -> Option<DrmClient> {
+    let mut client = DrmClient::default();
+    let mut found = false;
+    for line in text.lines() {
+        let Some((key, value)) = line.split_once(':') else {
+            continue;
+        };
+        let value = value.trim();
+        if key == "drm-client-id" {
+            client.id = value.parse().ok()?;
+            found = true;
+        } else if let Some(engine) = key.strip_prefix("drm-engine-capacity-") {
+            if let Ok(units) = value.parse() {
+                client.capacity.push((engine.to_string(), units));
+            }
+        } else if let Some(engine) = key.strip_prefix("drm-engine-") {
+            let nanos = value.trim_end_matches("ns").trim().parse().ok();
+            if let Some(nanos) = nanos {
+                client.engines.push((engine.to_string(), nanos));
+            }
+        }
+    }
+    found.then_some(client)
+}
+
+/// The busy share of each GPU engine (`render`, `video`, `copy`, ...), added up over the DRM
+/// clients of every process this user can read. Only read while the GPU screen is shown: it
+/// looks at every file descriptor of every process.
+#[derive(Debug, Default)]
+pub struct GpuEngines {
+    last: Option<(Instant, HashMap<(u64, String), u64>)>,
+}
+
+impl GpuEngines {
+    /// The share of each engine since the previous call, 0 to 1, in a stable order. Empty the
+    /// first time and when no client can be read.
+    pub fn read(&mut self, proc: &Path) -> Vec<(String, f32)> {
+        let now = Instant::now();
+        let mut busy: HashMap<(u64, String), u64> = HashMap::new();
+        let mut capacity: HashMap<String, u32> = HashMap::new();
+        for client in drm_clients(proc) {
+            for (engine, units) in client.capacity {
+                capacity.insert(engine, units.max(1));
+            }
+            for (engine, nanos) in client.engines {
+                let entry = busy.entry((client.id, engine)).or_insert(0);
+                *entry = (*entry).max(nanos);
+            }
+        }
+        let previous = self.last.replace((now, busy.clone()));
+        let Some((then, before)) = previous else {
+            return Vec::new();
+        };
+        let elapsed = now.duration_since(then).as_nanos() as f64;
+        if elapsed <= 0.0 {
+            return Vec::new();
+        }
+        let mut totals: Vec<(String, f64)> = Vec::new();
+        for ((client, engine), nanos) in &busy {
+            let delta = before
+                .get(&(*client, engine.clone()))
+                .map_or(0, |old| nanos.saturating_sub(*old));
+            match totals.iter_mut().find(|(name, _)| name == engine) {
+                Some((_, total)) => *total += delta as f64,
+                None => totals.push((engine.clone(), delta as f64)),
+            }
+        }
+        let mut shares: Vec<(String, f32)> = totals
+            .into_iter()
+            .map(|(engine, total)| {
+                let units = f64::from(capacity.get(&engine).copied().unwrap_or(1));
+                let share = (total / (elapsed * units)).clamp(0.0, 1.0) as f32;
+                (engine, share)
+            })
+            .collect();
+        shares.sort_by_key(|(engine, _)| engine_order(engine));
+        shares
+    }
+
+    /// Forgets the previous reading, when the GPU screen is left.
+    pub fn reset(&mut self) {
+        self.last = None;
+    }
+}
+
+/// The order engines are listed in: 3D first, then video, copy and the rest.
+fn engine_order(engine: &str) -> (u8, String) {
+    let rank = match engine {
+        "render" | "gfx" => 0,
+        "compute" => 1,
+        "video" | "dec" | "enc" => 2,
+        "video-enhance" => 3,
+        "copy" => 4,
+        _ => 5,
+    };
+    (rank, engine.to_string())
+}
+
+/// Every DRM client in the `fdinfo` of the processes under `proc` this user can read.
+fn drm_clients(proc: &Path) -> Vec<DrmClient> {
+    let mut clients = Vec::new();
+    let Ok(entries) = fs::read_dir(proc) else {
+        return clients;
+    };
+    for entry in entries.flatten() {
+        let name = entry.file_name();
+        if !name.to_string_lossy().chars().all(|c| c.is_ascii_digit()) {
+            continue;
+        }
+        let Ok(fds) = fs::read_dir(entry.path().join("fd")) else {
+            continue;
+        };
+        for fd in fds.flatten() {
+            let is_drm =
+                fs::read_link(fd.path()).is_ok_and(|target| target.starts_with("/dev/dri/"));
+            if !is_drm {
+                continue;
+            }
+            let info = entry.path().join("fdinfo").join(fd.file_name());
+            if let Some(client) = fs::read_to_string(info)
+                .ok()
+                .as_deref()
+                .and_then(parse_fdinfo)
+            {
+                clients.push(client);
+            }
+        }
+    }
+    clients
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used)]
 mod tests {
@@ -279,6 +424,30 @@ mod tests {
         );
         let watts = power.watts().unwrap();
         assert!(watts > 0.0);
+    }
+
+    #[test]
+    fn a_drm_fdinfo_gives_its_client_and_engines() {
+        let text = "pos:\t0\ndrm-driver:\ti915\ndrm-client-id:\t638\ndrm-engine-render:\t213512 ns\ndrm-engine-copy:\t0 ns\ndrm-engine-capacity-video:\t2\ndrm-engine-video:\t40 ns\n";
+        let client = parse_fdinfo(text).unwrap();
+        assert_eq!(client.id, 638);
+        assert_eq!(
+            client.engines,
+            vec![
+                ("render".to_string(), 213_512),
+                ("copy".to_string(), 0),
+                ("video".to_string(), 40)
+            ]
+        );
+        assert_eq!(client.capacity, vec![("video".to_string(), 2)]);
+        assert_eq!(parse_fdinfo("pos:\t0\nflags:\t02\n"), None);
+    }
+
+    #[test]
+    fn engines_are_listed_3d_first() {
+        let mut engines = vec!["copy", "video", "render"];
+        engines.sort_by_key(|engine| engine_order(engine));
+        assert_eq!(engines, vec!["render", "video", "copy"]);
     }
 
     #[test]
