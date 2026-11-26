@@ -26,6 +26,15 @@ latexo-core = { path = "../latexo-core" }
 latexo-sensors = { path = "../latexo-sensors" }
 notify-rust = { version = "4.19", default-features = false, features = ["z"] }
 
+# The tray icon on Linux: a StatusNotifierItem over D-Bus, on the zbus and async-io gpui already
+# builds (no tokio).
+[target.'cfg(target_os = "linux")'.dependencies]
+ksni = { version = "0.3.7", default-features = false, features = ["async-io", "blocking"] }
+
+# The tray icon on Windows.
+[target.'cfg(windows)'.dependencies]
+tray-icon = { version = "0.21", default-features = false }
+
 # The Windows resources, compiled when the target is Windows (build.rs), from any host.
 [build-dependencies]
 embed-resource = "3"

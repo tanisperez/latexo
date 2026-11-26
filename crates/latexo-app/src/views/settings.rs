@@ -297,6 +297,21 @@ impl AppView {
                 }),
             palette,
         );
+        let tray = switch_halo(
+            "settings-tray-halo",
+            Switch::new("settings-tray")
+                .checked(settings.tray_icon)
+                .on_click({
+                    let weak = weak.clone();
+                    move |checked, window, cx| {
+                        let on = *checked;
+                        let _ = weak.update(cx, |view, cx| {
+                            view.change(window, cx, |settings| settings.tray_icon = on)
+                        });
+                    }
+                }),
+            palette,
+        );
         let startup = section(
             t!("settings.startup").into_owned(),
             vec![
@@ -309,6 +324,13 @@ impl AppView {
                     None,
                     login,
                     true,
+                    palette,
+                ),
+                row(
+                    t!("settings.tray_icon"),
+                    Some(t!("settings.tray_icon_description").into_owned()),
+                    tray,
+                    false,
                     palette,
                 ),
                 row(

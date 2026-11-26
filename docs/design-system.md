@@ -78,5 +78,5 @@ and temperature, each a muted label and a mono value. Anchored at the top center
 
 ## Not built yet
 
-The tray flyout, and the fan curve and profiles (see `AGENTS.md`, Pending
+The tray flyout (the tray icon has a native menu instead), and the fan curve and profiles (see `AGENTS.md`, Pending
 decisions).

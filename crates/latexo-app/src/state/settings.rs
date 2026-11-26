@@ -292,6 +292,8 @@ pub struct Settings {
     pub start_at_login: bool,
     /// Show the floating pill, always above the other windows.
     pub floating_pill: bool,
+    /// Show an icon in the tray (the notification area).
+    pub tray_icon: bool,
     /// Look for a new version at startup (only in builds with the updater).
     pub check_updates: bool,
     /// The log level.
@@ -316,6 +318,7 @@ impl Default for Settings {
             currency: "€".to_string(),
             start_at_login: false,
             floating_pill: false,
+            tray_icon: true,
             check_updates: true,
             log_level: LogLevel::default(),
             alerts: default_rules(),
@@ -474,6 +477,9 @@ fn parse_settings(content: &str) -> Settings {
     if let Some(value) = flag("floating_pill") {
         settings.floating_pill = value;
     }
+    if let Some(value) = flag("tray_icon") {
+        settings.tray_icon = value;
+    }
     if let Some(value) = flag("check_updates") {
         settings.check_updates = value;
     }
@@ -528,6 +534,7 @@ mod tests {
             currency: "$".to_string(),
             start_at_login: true,
             floating_pill: true,
+            tray_icon: false,
             check_updates: false,
             log_level: LogLevel::Debug,
             alerts: default_rules().into_iter().take(2).collect(),

@@ -14,6 +14,7 @@ mod resources;
 mod root;
 mod settings;
 mod temperatures;
+mod tray;
 mod update;
 mod widgets;
 

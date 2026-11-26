@@ -55,6 +55,8 @@ pub struct AppView {
     pub update_env: crate::state::update::UpdateEnv,
     /// The floating pill's window, while it is open.
     pub pill: Option<AnyWindowHandle>,
+    /// The tray icon, while it is shown.
+    pub tray: Option<super::tray::TrayIcon>,
     content_scroll: ScrollHandle,
     focus_handle: FocusHandle,
     interval_ms: Arc<AtomicU64>,
@@ -92,6 +94,7 @@ impl AppView {
             update: crate::state::update::UpdateState::default(),
             update_env: crate::state::update::UpdateEnv::detect(),
             pill: None,
+            tray: None,
             content_scroll: ScrollHandle::new(),
             focus_handle: cx.focus_handle(),
             interval_ms: Arc::new(AtomicU64::new(interval_ms(&settings_interval))),
@@ -106,6 +109,9 @@ impl AppView {
         view.schedule_startup_update_check(cx);
         if view.settings.floating_pill {
             view.set_pill(true, window, cx);
+        }
+        if view.settings.tray_icon {
+            view.set_tray(true, window, cx);
         }
         view
     }
@@ -204,6 +210,8 @@ impl AppView {
             search.set_placeholder(t!("processes.search_placeholder"), window, cx)
         });
         telaio_ui::ThemeChoice::from(self.settings.theme).apply(Some(window), cx);
+        self.set_tray(self.settings.tray_icon, window, cx);
+        self.sync_tray();
         cx.notify();
     }
 

@@ -59,6 +59,14 @@ Expo/React Native conventions here.
   and again only after it clears. They show as in-window notifications and in the history of the
   Alerts screen, and as system notifications (`notify-rust`, which gpui already builds on Linux;
   toasts on Windows) while the window is not active.
+- Tray icon: a StatusNotifierItem on Linux (`ksni` without tokio, on the zbus and async-io gpui
+  already builds; GNOME needs its AppIndicator extension, and without a watcher the icon is only
+  logged as missing) and `tray-icon` on Windows, driven by the main thread's message loop. Both
+  send the menu choices through a channel the window waits on. Closing the window still quits.
+- Floating pill: `views/pill.rs`, a layer shell overlay on Wayland, an always-on-top pop-up
+  dragged by its logo on Windows and X11.
+- Keyboard: `Ctrl+F` (search the processes), `Delete` (end the selected process, only on the
+  Processes screen), `Ctrl+,` (Settings), in `actions.rs`.
 - Start with the session: an XDG autostart entry on Linux, an `HKCU\...\Run` value written with
   `reg.exe` on Windows (no registry crate, no `unsafe`).
 - Design: the prototype lives in a claude.ai Artifact (Design canvas),
@@ -68,11 +76,9 @@ Expo/React Native conventions here.
 
 ## Pending decisions (ask before choosing)
 
-- **Tray icon** of the design: gpui has no tray support. Needs a tray crate (and its own event
-  loop on Linux). Not built. The **floating pill** is built (`views/pill.rs`, the
-  `floating_pill` setting): a layer shell overlay on Wayland (not on GNOME, which has no layer
-  shell; the setting then turns back off with a notification) and an always-on-top pop-up on
-  Windows and X11.
+- **Tray flyout** of the design (a popup with small charts above the tray icon): not built. The
+  tray icon itself is (`views/tray.rs`, the `tray_icon` setting, on by default), with a native
+  menu: Open Latexo, the floating pill and Quit.
 - **Fan curves and fan control**: the design's profiles need a board driver; Latexo only reads.
 - **Estimated power** of the parts without a sensor (memory, disks, board): left out, nothing is
   estimated today.

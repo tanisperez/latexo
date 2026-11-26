@@ -105,6 +105,16 @@ _version: 2
   es: "Iniciar al entrar en la sesión"
   gl: "Iniciar ao entrar na sesión"
   it: "Avvia all'accesso"
+"settings.tray_icon":
+  en: "Icon in the tray"
+  es: "Icono en la bandeja"
+  gl: "Icona na bandexa"
+  it: "Icona nell'area di notifica"
+"settings.tray_icon_description":
+  en: "Opens Latexo, the floating pill or quits"
+  es: "Abre Latexo, la pastilla flotante o sale"
+  gl: "Abre Latexo, a pastilla flotante ou sae"
+  it: "Apre Latexo, la pillola fluttuante o esce"
 "settings.floating_pill":
   en: "Floating pill"
   es: "Pastilla flotante"

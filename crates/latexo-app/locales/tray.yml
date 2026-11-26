@@ -1,0 +1,12 @@
+# The tray area. Glossary and rules: docs/i18n.md
+_version: 2
+"tray.open":
+  en: "Open Latexo"
+  es: "Abrir Latexo"
+  gl: "Abrir Latexo"
+  it: "Apri Latexo"
+"tray.quit":
+  en: "Quit"
+  es: "Salir"
+  gl: "Saír"
+  it: "Esci"
