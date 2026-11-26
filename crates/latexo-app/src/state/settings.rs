@@ -179,6 +179,15 @@ pub enum RangeChoice {
     /// One hour.
     #[serde(rename = "1h")]
     OneHour,
+    /// Six hours.
+    #[serde(rename = "6h")]
+    SixHours,
+    /// A day.
+    #[serde(rename = "24h")]
+    Day,
+    /// A week.
+    #[serde(rename = "7d")]
+    Week,
 }
 
 impl From<RangeChoice> for Range {
@@ -188,6 +197,9 @@ impl From<RangeChoice> for Range {
             RangeChoice::FiveMinutes => Range::FiveMinutes,
             RangeChoice::FifteenMinutes => Range::FifteenMinutes,
             RangeChoice::OneHour => Range::OneHour,
+            RangeChoice::SixHours => Range::SixHours,
+            RangeChoice::Day => Range::Day,
+            RangeChoice::Week => Range::Week,
         }
     }
 }
@@ -199,6 +211,51 @@ impl From<Range> for RangeChoice {
             Range::FiveMinutes => RangeChoice::FiveMinutes,
             Range::FifteenMinutes => RangeChoice::FifteenMinutes,
             Range::OneHour => RangeChoice::OneHour,
+            Range::SixHours => RangeChoice::SixHours,
+            Range::Day => RangeChoice::Day,
+            Range::Week => RangeChoice::Week,
+        }
+    }
+}
+
+/// How long the minute history is kept on disk.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize)]
+pub enum HistoryKeep {
+    /// Only the last hour, in memory; nothing is written.
+    #[serde(rename = "1h")]
+    OneHour,
+    /// A day, the default.
+    #[default]
+    #[serde(rename = "24h")]
+    Day,
+    /// A week.
+    #[serde(rename = "7d")]
+    Week,
+}
+
+impl HistoryKeep {
+    /// Every choice, shortest first.
+    pub const ALL: [HistoryKeep; 3] = [HistoryKeep::OneHour, HistoryKeep::Day, HistoryKeep::Week];
+
+    /// The minutes kept on disk, 0 for none.
+    pub fn minutes(self) -> usize {
+        match self {
+            HistoryKeep::OneHour => 0,
+            HistoryKeep::Day => 24 * 60,
+            HistoryKeep::Week => 7 * 24 * 60,
+        }
+    }
+
+    /// Whether the charts may show `range`.
+    pub fn allows(self, range: Range) -> bool {
+        range.secs() <= (self.minutes() as f64 * 60.0).max(3600.0)
+    }
+
+    fn code(self) -> &'static str {
+        match self {
+            HistoryKeep::OneHour => "1h",
+            HistoryKeep::Day => "24h",
+            HistoryKeep::Week => "7d",
         }
     }
 }
@@ -217,6 +274,8 @@ pub struct Settings {
     pub theme: ThemeChoice,
     /// How often the machine is read.
     pub interval: Interval,
+    /// How long the minute history is kept.
+    pub history_keep: HistoryKeep,
     /// How every chart is drawn.
     pub chart_style: ChartStyle,
     /// The range every chart shows.
@@ -246,6 +305,7 @@ impl Default for Settings {
             language: LanguageChoice::default(),
             theme: ThemeChoice::default(),
             interval: Interval::default(),
+            history_keep: HistoryKeep::default(),
             chart_style: ChartStyle::default(),
             range: RangeChoice::default(),
             cores_view: CoresView::default(),
@@ -338,6 +398,11 @@ fn parse_settings(content: &str) -> Settings {
     {
         settings.interval = value;
     }
+    if let Some(value) =
+        text("history_keep").and_then(|t| parse_choice(t, &HistoryKeep::ALL, HistoryKeep::code))
+    {
+        settings.history_keep = value;
+    }
     if let Some(value) = text("chart_style").and_then(|t| {
         parse_choice(t, &ChartStyle::ALL, |c| match c {
             ChartStyle::Line => "line",
@@ -354,12 +419,18 @@ fn parse_settings(content: &str) -> Settings {
             RangeChoice::FiveMinutes,
             RangeChoice::FifteenMinutes,
             RangeChoice::OneHour,
+            RangeChoice::SixHours,
+            RangeChoice::Day,
+            RangeChoice::Week,
         ];
         parse_choice(t, &all, |c| match c {
             RangeChoice::OneMinute => "1m",
             RangeChoice::FiveMinutes => "5m",
             RangeChoice::FifteenMinutes => "15m",
             RangeChoice::OneHour => "1h",
+            RangeChoice::SixHours => "6h",
+            RangeChoice::Day => "24h",
+            RangeChoice::Week => "7d",
         })
     }) {
         settings.range = value;
@@ -409,6 +480,9 @@ fn parse_settings(content: &str) -> Settings {
             .filter_map(|rule| rule.clone().try_into::<Rule>().ok())
             .collect();
     }
+    if !settings.history_keep.allows(settings.range.into()) {
+        settings.range = RangeChoice::OneHour;
+    }
     settings
 }
 
@@ -439,6 +513,7 @@ mod tests {
             language: LanguageChoice::Gl,
             theme: ThemeChoice::Dark,
             interval: Interval::TwoSeconds,
+            history_keep: HistoryKeep::Week,
             chart_style: ChartStyle::Steps,
             range: RangeChoice::OneHour,
             cores_view: CoresView::Map,

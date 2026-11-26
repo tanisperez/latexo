@@ -37,6 +37,7 @@ Expo/React Native conventions here.
   our own for what sysinfo lacks: fans (`hwmon`), the battery (`power_supply`), the processor
   package power (`powercap`, root only on most distributions), the user and kernel split
   (`/proc/stat`) and the temperature of each core (`topology/core_id` matched with `coretemp`).
+  On Windows, the battery through `starship-battery`.
 - **Sampling runs on a thread of its own** (`latexo-sampler`), not on gpui's background
   executor: sysinfo's GPU handles are not `Send`. It sends one sample per interval through an
   `async-channel`; the interval is an `AtomicU64` the settings update.
@@ -44,15 +45,20 @@ Expo/React Native conventions here.
   user on 2026-11-25). About is a screen too.
 - Languages of the UI: **English** (source and fallback), **Spanish**, **Galician** and
   **Italian**.
-- History: one hour in memory (7200 samples, the longest range at 0.5 s). Chart ranges 1, 5 and
-  15 minutes and 1 hour. Nothing of the history is written to disk; Settings exports it as CSV.
+- History: the last hour in memory, sample by sample (7200 samples, the longest range at 0.5 s),
+  for the 1, 5 and 15 minute and 1 hour ranges. Besides, the average of every series over each
+  minute (`latexo_core::minutes`), kept for 24 hours (default) or 7 days by the `history_keep`
+  setting and saved in `history.tsv` every 10 minutes and on close, for the 6 hour, 24 hour and
+  7 day ranges. The minutes Latexo was not running are gaps. Settings exports the last hour as
+  CSV.
 - Energy: the measured power (the battery discharge on a laptop on battery, else the package and
   GPU power when readable) added up into watt hours today and this month, saved in
   `energy.toml`, priced with the `energy_price` setting. Nothing is estimated.
 - Alerts: rules in `settings.toml` (`[[alert]]`), checked on every sample by
   `latexo_core::alerts::Watcher`; a rule fires once when its condition holds for its duration
   and again only after it clears. They show as in-window notifications and in the history of the
-  Alerts screen. No OS notifications yet.
+  Alerts screen, and as system notifications (`notify-rust`, which gpui already builds on Linux;
+  toasts on Windows) while the window is not active.
 - Start with the session: an XDG autostart entry on Linux, an `HKCU\...\Run` value written with
   `reg.exe` on Windows (no registry crate, no `unsafe`).
 - Design: the prototype lives in a claude.ai Artifact (Design canvas),
@@ -65,8 +71,6 @@ Expo/React Native conventions here.
 - **Tray icon and the floating pill** of the design: gpui has no tray support. Needs a tray crate
   (and its own event loop on Linux) or a small always-on-top window for the pill. Not built.
 - **Fan curves and fan control**: the design's profiles need a board driver; Latexo only reads.
-- **Persistent history** (24 h, 7 days, as the design's Settings offered): needs a small on-disk
-  store. Not built; the setting was left out instead of shown without effect.
 - **Estimated power** of the parts without a sensor (memory, disks, board): left out, nothing is
   estimated today.
 - **Windows sensors beyond sysinfo** (CPU package power, fans, more temperatures) need a kernel
@@ -88,7 +92,8 @@ latexo-app ──> latexo-sensors ──> latexo-core
 ```
 
 - `latexo-core`: the domain model, no IO and no gpui. `Sample` (one reading of the whole
-  machine), `History` (every series aligned on one ring of times, `NaN` for gaps), the process
+  machine), `History` (every series aligned on one ring of times, `NaN` for gaps), the minute
+  history (`minutes`: averages per minute, gaps, the `history.tsv` text format), the process
   query (sort, filter, search, process tree), the alert rules and their `Watcher`, the energy
   account and the units.
 - `latexo-sensors`: reads the machine. `Sampler::new` opens the handles, `Sampler::sample`

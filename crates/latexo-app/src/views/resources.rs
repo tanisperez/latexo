@@ -53,7 +53,9 @@ impl AppView {
     fn time_labels(&self, palette: &Palette) -> impl IntoElement {
         let range = self.range();
         let half = range.secs() / 2.0;
-        let half = if half >= 60.0 {
+        let half = if half >= 3600.0 {
+            t!("charts.ago_h", value = format::decimal(half / 3600.0, 0)).into_owned()
+        } else if half >= 60.0 {
             t!("charts.ago_min", value = format::decimal(half / 60.0, 1)).into_owned()
         } else {
             t!("charts.ago_s", value = format::decimal(half, 0)).into_owned()
@@ -603,10 +605,10 @@ impl AppView {
             )
         });
         let cpu = sample.cpu_temperature();
-        let max = self
-            .monitor
-            .history
-            .max_in(&SeriesKey::CpuTemperature, self.range());
+        let max = self.monitor.history.max_in(
+            &SeriesKey::CpuTemperature,
+            self.range().min(latexo_core::Range::OneHour),
+        );
         let mut stats = Vec::new();
         if let Some(cpu) = cpu {
             stats.push((

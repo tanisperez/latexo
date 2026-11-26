@@ -61,7 +61,8 @@ Four styles, chosen in the header of every screen and in Settings, applied to ev
 - **Dots**: columns of 6 px dots with a 2 px gap, the dotted grid of the first design.
 
 Grid: dashed lines at 0, 50 and 100 %. Thresholds: a dashed warning line; bars and dots over it
-turn warning. Ranges: 1, 5 and 15 minutes and 1 hour.
+turn warning. Ranges: 1, 5 and 15 minutes and 1 hour from the samples, and 6 hours, 24 hours and
+7 days from the minute history, as far as "History kept" allows.
 
 ## Cores
 
@@ -72,5 +73,5 @@ temperature of each core as columns).
 
 ## Not built yet
 
-The tray flyout and the floating pill, the fan curve and profiles, and the 24 h and 7 day history
-of the design's Settings (see `AGENTS.md`, Pending decisions).
+The tray flyout and the floating pill, and the fan curve and profiles (see `AGENTS.md`, Pending
+decisions).

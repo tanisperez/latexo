@@ -9,6 +9,7 @@
 pub mod alerts;
 pub mod energy;
 pub mod history;
+pub mod minutes;
 pub mod process;
 pub mod sample;
 pub mod units;

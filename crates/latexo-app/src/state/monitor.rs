@@ -9,6 +9,8 @@ use std::sync::Arc;
 use chrono::{Datelike, Local};
 use latexo_core::alerts::{Fired, Rule, Watcher};
 use latexo_core::energy::EnergyAccount;
+use latexo_core::history::values_of;
+use latexo_core::minutes::{self, Aggregator, MINUTE};
 use latexo_core::{History, Sample, SystemInfo};
 use latexo_sensors::Capabilities;
 
@@ -22,6 +24,10 @@ const ALERT_LOG_SIZE: usize = 50;
 const ENERGY_FILE: &str = "energy.toml";
 /// How often the energy account is written, in samples.
 const ENERGY_SAVE_EVERY: u64 = 60;
+/// The minute history file, in the config folder.
+const MINUTES_FILE: &str = "history.tsv";
+/// How often the minute history is written, in minutes.
+const MINUTES_SAVE_EVERY: u64 = 10;
 
 /// An alert that fired.
 #[derive(Debug, Clone, PartialEq)]
@@ -49,19 +55,45 @@ pub struct Monitor {
     pub energy: EnergyAccount,
     /// The alerts that fired, newest first.
     pub alert_log: Vec<AlertEvent>,
+    /// The average of every series over each minute, for the long ranges.
+    pub minutes: History,
+    aggregator: Aggregator,
+    keep_minutes: usize,
+    minutes_pushed: u64,
     watcher: Watcher,
     last_elapsed: Option<f64>,
     pushed: u64,
 }
 
 impl Monitor {
-    /// An empty monitor, with the energy account of the last run.
-    pub fn new() -> Self {
+    /// An empty monitor, with the energy account and the minute history of the last runs. The
+    /// minute history keeps `keep_minutes` minutes, none for 0.
+    pub fn new(keep_minutes: usize) -> Self {
         Self {
             history: History::new(HISTORY_CAPACITY),
             energy: load_energy(),
+            minutes: load_minutes(keep_minutes),
+            keep_minutes,
             ..Self::default()
         }
+    }
+
+    /// Keeps `keep_minutes` minutes from now on: fewer drops the oldest, 0 forgets them all and
+    /// deletes the file.
+    pub fn set_keep(&mut self, keep_minutes: usize) {
+        if keep_minutes == self.keep_minutes {
+            return;
+        }
+        self.keep_minutes = keep_minutes;
+        if keep_minutes == 0 {
+            self.minutes = History::default();
+            self.aggregator.clear();
+            delete_minutes();
+            return;
+        }
+        let since = unix_now() - keep_minutes as f64 * MINUTE;
+        self.minutes = minutes::from_text(&minutes::to_text(&self.minutes), keep_minutes, since);
+        self.save_minutes();
     }
 
     /// Adds a sample: the history, the energy account and the alert rules. Returns the alerts that
@@ -76,6 +108,16 @@ impl Monitor {
             let day = i64::from(now.date_naive().num_days_from_ce());
             let month = i64::from(now.year()) * 12 + i64::from(now.month0());
             self.energy.add(f64::from(watts), secs, day, month);
+        }
+        if self.keep_minutes > 0
+            && let Some((time, values)) = self.aggregator.add(unix_now(), values_of(&sample))
+        {
+            minutes::fill_gap(&mut self.minutes, time);
+            self.minutes.push_values(time, values);
+            self.minutes_pushed += 1;
+            if self.minutes_pushed.is_multiple_of(MINUTES_SAVE_EVERY) {
+                self.save_minutes();
+            }
         }
         self.history.push(&sample);
         let fired: Vec<AlertEvent> = self
@@ -107,9 +149,27 @@ impl Monitor {
         self.watcher.reset();
     }
 
-    /// Forgets the history (Settings, Data).
+    /// Forgets the history, the minute history and its file (Settings, Data).
     pub fn clear_history(&mut self) {
         self.history.clear();
+        self.minutes.clear();
+        self.aggregator.clear();
+        delete_minutes();
+    }
+
+    /// Writes the minute history, when it is kept.
+    pub fn save_minutes(&self) {
+        if self.keep_minutes == 0 || self.minutes.is_empty() {
+            return;
+        }
+        if let Some(base) = config_dir() {
+            let text = minutes::to_text(&self.minutes);
+            if let Err(error) =
+                fs::create_dir_all(&base).and_then(|()| fs::write(base.join(MINUTES_FILE), text))
+            {
+                log::warn!("could not save the minute history: {error}");
+            }
+        }
     }
 
     /// Writes the energy account.
@@ -117,6 +177,34 @@ impl Monitor {
         if let Some(base) = config_dir() {
             save_energy_at(&base, &self.energy);
         }
+    }
+}
+
+/// Unix time now, in seconds.
+fn unix_now() -> f64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0.0, |elapsed| elapsed.as_secs_f64())
+}
+
+fn load_minutes(keep_minutes: usize) -> History {
+    if keep_minutes == 0 {
+        return History::default();
+    }
+    let since = unix_now() - keep_minutes as f64 * MINUTE;
+    let text = config_dir()
+        .and_then(|base| fs::read_to_string(base.join(MINUTES_FILE)).ok())
+        .unwrap_or_default();
+    let mut history = minutes::from_text(&text, keep_minutes, since);
+    // Up to the minute in progress, so the newest saved minute sits where it belongs.
+    minutes::fill_gap(&mut history, (unix_now() / MINUTE).floor() * MINUTE);
+    log::info!("minute history: {} minutes read", history.len());
+    history
+}
+
+fn delete_minutes() {
+    if let Some(base) = config_dir() {
+        let _ = fs::remove_file(base.join(MINUTES_FILE));
     }
 }
 

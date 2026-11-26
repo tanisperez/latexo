@@ -15,8 +15,8 @@ use telaio_ui::components::{
 use crate::state::format;
 use crate::state::monitor::history_csv;
 use crate::state::settings::{
-    ChartStyle, Interval, LogLevel, PRICE_RANGE, PRICE_STEP, Settings, TemperatureChoice,
-    ThemeChoice,
+    ChartStyle, HistoryKeep, Interval, LogLevel, PRICE_RANGE, PRICE_STEP, Settings,
+    TemperatureChoice, ThemeChoice,
 };
 use crate::theme::Palette;
 use crate::theme::metrics::{GAP, SETTINGS_ROW_HEIGHT, TEXT_ROW};
@@ -122,22 +122,41 @@ impl AppView {
 
         let sampling = section(
             t!("settings.sampling").into_owned(),
-            vec![row(
-                t!("settings.interval"),
-                Some(t!("settings.interval_description").into_owned()),
-                segmented(
-                    "settings-interval",
-                    Interval::ALL
-                        .into_iter()
-                        .map(|interval| (interval, format::seconds(interval.secs())))
-                        .collect(),
-                    settings.interval,
-                    weak.clone(),
-                    |settings, value| settings.interval = value,
+            vec![
+                row(
+                    t!("settings.interval"),
+                    Some(t!("settings.interval_description").into_owned()),
+                    segmented(
+                        "settings-interval",
+                        Interval::ALL
+                            .into_iter()
+                            .map(|interval| (interval, format::seconds(interval.secs())))
+                            .collect(),
+                        settings.interval,
+                        weak.clone(),
+                        |settings, value| settings.interval = value,
+                    ),
+                    true,
+                    palette,
                 ),
-                true,
-                palette,
-            )],
+                row(
+                    t!("settings.history_keep"),
+                    Some(t!("settings.history_keep_description").into_owned()),
+                    segmented(
+                        "settings-history-keep",
+                        vec![
+                            (HistoryKeep::OneHour, t!("charts.range_1h").into_owned()),
+                            (HistoryKeep::Day, t!("charts.range_24h").into_owned()),
+                            (HistoryKeep::Week, t!("settings.week").into_owned()),
+                        ],
+                        settings.history_keep,
+                        weak.clone(),
+                        |settings, value| settings.history_keep = value,
+                    ),
+                    false,
+                    palette,
+                ),
+            ],
             palette,
         );
 

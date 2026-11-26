@@ -15,6 +15,21 @@ _version: 2
   es: "Menos tiempo, más gasto de CPU"
   gl: "Menos tempo, máis gasto de CPU"
   it: "Meno tempo, più CPU"
+"settings.history_keep":
+  en: "History kept"
+  es: "Historial conservado"
+  gl: "Historial conservado"
+  it: "Cronologia conservata"
+"settings.history_keep_description":
+  en: "Minute averages, saved on this computer"
+  es: "Medias por minuto, guardadas en este equipo"
+  gl: "Medias por minuto, gardadas neste equipo"
+  it: "Medie al minuto, salvate su questo computer"
+"settings.week":
+  en: "7 days"
+  es: "7 días"
+  gl: "7 días"
+  it: "7 giorni"
 "settings.appearance":
   en: "Appearance"
   es: "Apariencia"
@@ -181,10 +196,10 @@ _version: 2
   gl: "Borrar historial"
   it: "Cancella cronologia"
 "settings.clear_description":
-  en: "The charts start again from now"
-  es: "Las gráficas empiezan de nuevo desde ahora"
-  gl: "As gráficas comezan de novo desde agora"
-  it: "I grafici ricominciano da adesso"
+  en: "The charts start again from now, the saved days included"
+  es: "Las gráficas empiezan de nuevo desde ahora, también los días guardados"
+  gl: "As gráficas comezan de novo desde agora, tamén os días gardados"
+  it: "I grafici ricominciano da adesso, compresi i giorni salvati"
 "settings.cleared":
   en: "History cleared"
   es: "Historial borrado"

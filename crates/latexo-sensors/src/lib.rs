@@ -33,6 +33,34 @@ const SENSOR_LIST_EVERY: u64 = 60;
 /// How often the processes are read while no screen shows them, in samples.
 const IDLE_PROCESSES_EVERY: u64 = 10;
 
+/// The first battery on Windows, through `starship-battery`; `None` on a desktop.
+#[cfg(windows)]
+fn windows_battery() -> Option<latexo_core::Battery> {
+    use starship_battery::State;
+    use starship_battery::units::power::watt;
+    use starship_battery::units::ratio::ratio;
+
+    let manager = starship_battery::Manager::new().ok()?;
+    let battery = manager.batteries().ok()?.flatten().next()?;
+    let watts = battery.energy_rate().get::<watt>();
+    let state = battery.state();
+    let watts = match state {
+        State::Discharging => -watts.abs(),
+        _ => watts.abs(),
+    };
+    Some(latexo_core::Battery {
+        charge: battery.state_of_charge().get::<ratio>().clamp(0.0, 1.0),
+        watts: watts.is_finite().then_some(watts),
+        on_ac: !matches!(state, State::Discharging),
+    })
+}
+
+/// No battery reader besides Linux and Windows.
+#[cfg(not(windows))]
+fn windows_battery() -> Option<latexo_core::Battery> {
+    None
+}
+
 /// What the platform can read, for the "Sensors" section of Settings.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Capabilities {
@@ -525,6 +553,7 @@ impl Sampler {
         if !cfg!(target_os = "linux") {
             return PowerSample {
                 gpu,
+                battery: windows_battery(),
                 ..PowerSample::default()
             };
         }

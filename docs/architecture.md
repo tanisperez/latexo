@@ -27,6 +27,10 @@ The domain model, plain data and plain functions, no IO:
   fires a rule once when its condition has held for its duration and rearms it when it clears.
 - `energy`: `EnergyAccount`, watt hours today and this month, reset when the local day or month
   changes. Gaps over a minute (a suspended laptop) are not counted.
+- `minutes`: the minute history of the long ranges: `Aggregator` turns samples into the average
+  of each minute, `fill_gap` marks the minutes Latexo was not running, and `to_text` and
+  `from_text` write and read `history.tsv` (a header with the series names, then one line per
+  minute, tab separated, a gap as an empty field).
 - `units`: the unit and decimals of sizes and rates, temperatures in °C or °F, durations.
 
 ## latexo-sensors
@@ -46,7 +50,7 @@ returns one `Sample` whose rates cover the time since the previous call.
 | Temperature of each core | `coretemp` matched with `topology/core_id` | none |
 | Fans | `hwmon` `fan*_input` | none without a board driver |
 | Package power | `powercap` `intel-rapl:0` (root only on most systems) | none without a driver |
-| Battery | `power_supply` (charge, power, mains) | not read yet |
+| Battery | `power_supply` (charge, power, mains) | `starship-battery` |
 | GPUs, usage per process | sysinfo (NVML, Vulkan, `gpu_busy_percent`) | sysinfo (performance counters) |
 | Processes | sysinfo; kernel threads left out; names cut at 15 characters take the executable's name | sysinfo |
 
@@ -80,6 +84,8 @@ The `probe` example prints what a machine reports: `cargo run -p latexo-sensors 
 | --- | --- | --- |
 | `settings.toml` | config folder (`~/.config/latexo`, `%APPDATA%\latexo`) | every setting and the alert rules |
 | `energy.toml` | config folder | watt hours today and this month |
+| `history.tsv` | config folder | the average of every series per minute, for 24 h or 7 days (none with "1 h") |
+| `window.toml` | config folder | the window size and whether it was maximized |
 | `latexo.log` | `~/.local/state/latexo`, `%LOCALAPPDATA%\Latexo\logs` | the log, rotated at 5 MB, 10 files |
 | `codes.tanis.latexo.desktop` | `~/.config/autostart` (Linux) | only with "Start when I log in" |
 | `Latexo` value | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` (Windows) | only with "Start with Windows" |

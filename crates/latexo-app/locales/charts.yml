@@ -40,6 +40,26 @@ _version: 2
   es: "1 h"
   gl: "1 h"
   it: "1 h"
+"charts.range_6h":
+  en: "6 h"
+  es: "6 h"
+  gl: "6 h"
+  it: "6 h"
+"charts.range_24h":
+  en: "24 h"
+  es: "24 h"
+  gl: "24 h"
+  it: "24 h"
+"charts.range_7d":
+  en: "7 d"
+  es: "7 d"
+  gl: "7 d"
+  it: "7 g"
+"charts.ago_h":
+  en: "-%{value} h"
+  es: "-%{value} h"
+  gl: "-%{value} h"
+  it: "-%{value} h"
 "charts.now":
   en: "now"
   es: "ahora"

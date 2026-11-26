@@ -77,9 +77,10 @@ impl AppView {
             }
         });
         let settings_interval = settings.interval;
+        let keep_minutes = settings.history_keep.minutes();
         let mut view = Self {
             settings,
-            monitor: Monitor::new(),
+            monitor: Monitor::new(keep_minutes),
             screen: screen.unwrap_or_default(),
             query: ProcessQuery::default(),
             selected_pid: None,
@@ -178,6 +179,10 @@ impl AppView {
 
     /// Saves the settings and applies them: theme, language, log level.
     pub fn apply_settings(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        if !self.settings.history_keep.allows(self.range()) {
+            self.settings.range = Range::OneHour.into();
+        }
+        self.monitor.set_keep(self.settings.history_keep.minutes());
         save_settings(&self.settings);
         self.interval_ms
             .store(interval_ms(&self.settings.interval), Ordering::Relaxed);
@@ -219,9 +224,14 @@ impl AppView {
         self.settings.range.into()
     }
 
-    /// The time slots of the chart range at the current interval.
+    /// The time slots of the chart range: one per sample, or one per minute for the long ranges.
     pub fn slots(&self) -> usize {
-        (self.range().secs() / self.settings.interval.secs()).round() as usize + 1
+        let step = if self.range().is_long() {
+            latexo_core::minutes::MINUTE
+        } else {
+            self.settings.interval.secs()
+        };
+        (self.range().secs() / step).round() as usize + 1
     }
 
     /// Whether the theme follows the system.
@@ -229,9 +239,10 @@ impl AppView {
         self.settings.theme == ThemeChoice::System
     }
 
-    /// Writes the energy account, when the window closes.
+    /// Writes the energy account and the minute history, when the window closes.
     pub fn on_close(&self) {
         self.monitor.save_energy();
+        self.monitor.save_minutes();
     }
 }
 
@@ -591,7 +602,8 @@ impl AppView {
     /// The range selector of the header.
     pub fn range_control(&self, cx: &mut Context<Self>) -> impl IntoElement {
         let mut control = SegmentedControl::new("chart-range");
-        for range in Range::ALL {
+        let keep = self.settings.history_keep;
+        for range in Range::ALL.into_iter().filter(|range| keep.allows(*range)) {
             let weak = cx.weak_entity();
             control = control.item(
                 SegmentedItem::new(range_label(range))
@@ -793,6 +805,9 @@ pub fn range_label(range: Range) -> String {
         Range::FiveMinutes => t!("charts.range_5m"),
         Range::FifteenMinutes => t!("charts.range_15m"),
         Range::OneHour => t!("charts.range_1h"),
+        Range::SixHours => t!("charts.range_6h"),
+        Range::Day => t!("charts.range_24h"),
+        Range::Week => t!("charts.range_7d"),
     }
     .into_owned()
 }

@@ -87,16 +87,30 @@ pub enum Range {
     FifteenMinutes,
     /// The last hour.
     OneHour,
+    /// The last six hours, from the minute history.
+    SixHours,
+    /// The last day, from the minute history.
+    Day,
+    /// The last week, from the minute history.
+    Week,
 }
 
 impl Range {
     /// Every range, shortest first.
-    pub const ALL: [Range; 4] = [
+    pub const ALL: [Range; 7] = [
         Range::OneMinute,
         Range::FiveMinutes,
         Range::FifteenMinutes,
         Range::OneHour,
+        Range::SixHours,
+        Range::Day,
+        Range::Week,
     ];
+
+    /// Whether the range reads the minute history instead of the samples of the last hour.
+    pub fn is_long(self) -> bool {
+        self.secs() > 3600.0
+    }
 
     /// The length in seconds.
     pub fn secs(self) -> f64 {
@@ -105,6 +119,9 @@ impl Range {
             Range::FiveMinutes => 300.0,
             Range::FifteenMinutes => 900.0,
             Range::OneHour => 3600.0,
+            Range::SixHours => 6.0 * 3600.0,
+            Range::Day => 24.0 * 3600.0,
+            Range::Week => 7.0 * 24.0 * 3600.0,
         }
     }
 }
@@ -152,6 +169,11 @@ impl History {
         &self.times
     }
 
+    /// Every series kept, in a stable order.
+    pub fn keys(&self) -> impl Iterator<Item = &SeriesKey> {
+        self.series.keys()
+    }
+
     /// One series, `None` when it was never seen.
     pub fn series(&self, key: &SeriesKey) -> Option<&Series> {
         self.series.get(key)
@@ -190,7 +212,11 @@ impl History {
 
     /// Adds one value per series read from `sample`, taken at `sample.elapsed_secs`.
     pub fn push(&mut self, sample: &Sample) {
-        let values = extract(sample);
+        self.push_values(sample.elapsed_secs, values_of(sample));
+    }
+
+    /// Adds `values` taken at `time`; series left out get a gap.
+    pub fn push_values(&mut self, time: f64, values: Vec<(SeriesKey, f32)>) {
         if self.times.len() == self.capacity {
             self.times.pop_front();
             for series in self.series.values_mut() {
@@ -198,7 +224,7 @@ impl History {
             }
         }
         let padding = self.times.len();
-        self.times.push_back(sample.elapsed_secs);
+        self.times.push_back(time);
         for (key, value) in values {
             let series = self.series.entry(key).or_insert_with(|| Series {
                 values: std::iter::repeat_n(f32::NAN, padding).collect(),
@@ -226,7 +252,7 @@ impl History {
 }
 
 /// The values of one sample, one per series.
-fn extract(sample: &Sample) -> Vec<(SeriesKey, f32)> {
+pub fn values_of(sample: &Sample) -> Vec<(SeriesKey, f32)> {
     let mut values = vec![
         (SeriesKey::CpuUsage, sample.cpu.usage),
         (SeriesKey::MemoryUsed, sample.memory.used as f32),

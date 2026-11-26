@@ -38,7 +38,12 @@ pub fn nice_bytes_ceiling(value: f32, floor: f32) -> f32 {
 impl AppView {
     /// The values of `key` in the chart range.
     pub fn window(&self, key: &SeriesKey) -> Vec<f32> {
-        self.monitor.history.window(key, self.range())
+        let range = self.range();
+        if range.is_long() {
+            self.monitor.minutes.window(key, range)
+        } else {
+            self.monitor.history.window(key, range)
+        }
     }
 
     /// A chart of one series from 0 to `max`.

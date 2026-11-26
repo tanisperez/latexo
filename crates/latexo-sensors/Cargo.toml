@@ -12,6 +12,10 @@ latexo-core = { path = "../latexo-core" }
 sysinfo = { workspace = true, features = ["gpu"] }
 log = { workspace = true }
 
+# The battery on Windows (charge, power, plugged in); Linux reads /sys itself.
+[target.'cfg(windows)'.dependencies]
+starship-battery = { version = "0.12", default-features = false }
+
 [dev-dependencies]
 pretty_assertions = { workspace = true }
 tempfile = { workspace = true }
