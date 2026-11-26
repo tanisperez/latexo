@@ -3474,6 +3474,7 @@ dependencies = [
  "latexo-core",
  "latexo-sensors",
  "log",
+ "notify-rust",
  "pretty_assertions",
  "rust-i18n",
  "serde",

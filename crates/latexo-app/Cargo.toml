@@ -24,6 +24,7 @@ telaio-update = { workspace = true }
 latexo-cli = { path = "../latexo-cli" }
 latexo-core = { path = "../latexo-core" }
 latexo-sensors = { path = "../latexo-sensors" }
+notify-rust = { version = "4.19", default-features = false, features = ["z"] }
 
 # The Windows resources, compiled when the target is Windows (build.rs), from any host.
 [build-dependencies]

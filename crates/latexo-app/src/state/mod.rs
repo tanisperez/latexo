@@ -6,6 +6,7 @@ pub mod format;
 pub mod locale;
 pub mod monitor;
 pub mod nav;
+pub mod notify;
 pub mod settings;
 pub mod update;
 pub mod window;

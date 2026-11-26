@@ -110,6 +110,11 @@ _version: 2
   es: "Solo registrar"
   gl: "Só rexistrar"
   it: "Solo registro"
+"alerts.notification_title":
+  en: "Latexo alert"
+  es: "Alerta de Latexo"
+  gl: "Alerta de Latexo"
+  it: "Avviso di Latexo"
 "alerts.fired":
   en: "%{rule}: %{value}"
   es: "%{rule}: %{value}"

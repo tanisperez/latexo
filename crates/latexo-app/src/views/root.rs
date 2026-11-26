@@ -152,6 +152,13 @@ impl AppView {
             );
             if event.rule.action == latexo_core::alerts::AlertAction::Notify {
                 let text = self.alert_text(&event);
+                // Out of sight (minimized, behind other windows), the system shows it too.
+                if !window.is_window_active() {
+                    crate::state::notify::send(
+                        t!("alerts.notification_title").into_owned(),
+                        text.clone(),
+                    );
+                }
                 window.push_notification(Notification::warning(text), cx);
             }
         }
