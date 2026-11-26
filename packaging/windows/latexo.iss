@@ -27,7 +27,7 @@
 [Setup]
 ; Never change this GUID, it identifies the installed app for upgrades and the uninstaller.
 ; The doubled brace is Inno's escape for a literal one.
-AppId={1DE24260-14D4-4740-B870-76FBE2DE1C1F}
+AppId={{1DE24260-14D4-4740-B870-76FBE2DE1C1F}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
