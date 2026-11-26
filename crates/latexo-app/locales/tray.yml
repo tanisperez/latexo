@@ -10,3 +10,13 @@ _version: 2
   es: "Salir"
   gl: "Saír"
   it: "Esci"
+"tray.pill":
+  en: "Pill"
+  es: "Pastilla"
+  gl: "Pastilla"
+  it: "Pillola"
+"tray.alert_ago":
+  en: "%{alert} · %{minutes} min ago"
+  es: "%{alert} · hace %{minutes} min"
+  gl: "%{alert} · hai %{minutes} min"
+  it: "%{alert} · %{minutes} min fa"

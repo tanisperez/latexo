@@ -55,6 +55,8 @@ pub struct AppView {
     pub update_env: crate::state::update::UpdateEnv,
     /// The floating pill's window, while it is open.
     pub pill: Option<AnyWindowHandle>,
+    /// The tray flyout's window, while it is open.
+    pub flyout: Option<AnyWindowHandle>,
     /// The tray icon, while it is shown.
     pub tray: Option<super::tray::TrayIcon>,
     content_scroll: ScrollHandle,
@@ -95,6 +97,7 @@ impl AppView {
             update_env: crate::state::update::UpdateEnv::detect(),
             pill: None,
             tray: None,
+            flyout: None,
             content_scroll: ScrollHandle::new(),
             focus_handle: cx.focus_handle(),
             interval_ms: Arc::new(AtomicU64::new(interval_ms(&settings_interval))),
@@ -112,6 +115,9 @@ impl AppView {
         }
         if view.settings.tray_icon {
             view.set_tray(true, window, cx);
+        }
+        if crate::state::nav::opens_flyout() {
+            view.toggle_flyout(window, cx);
         }
         view
     }

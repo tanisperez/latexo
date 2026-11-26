@@ -5,6 +5,7 @@ mod alerts;
 mod chart;
 mod charts;
 mod cores;
+mod flyout;
 mod gpu;
 mod logo;
 mod overview;

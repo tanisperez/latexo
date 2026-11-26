@@ -110,10 +110,15 @@ impl Screen {
 pub fn startup_screen() -> Option<Screen> {
     let value = std::env::var("LATEXO_OPEN").ok()?;
     let screen = Screen::parse(&value);
-    if screen.is_none() {
+    if screen.is_none() && !opens_flyout() {
         log::warn!("ignoring LATEXO_OPEN={value:?}: not a screen");
     }
     screen
+}
+
+/// Whether the `LATEXO_OPEN=flyout` debug hook asks for the tray flyout at startup.
+pub fn opens_flyout() -> bool {
+    std::env::var("LATEXO_OPEN").is_ok_and(|value| value.trim().eq_ignore_ascii_case("flyout"))
 }
 
 #[cfg(test)]

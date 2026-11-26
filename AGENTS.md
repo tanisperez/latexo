@@ -59,6 +59,10 @@ Expo/React Native conventions here.
   and again only after it clears. They show as in-window notifications and in the history of the
   Alerts screen, and as system notifications (`notify-rust`, which gpui already builds on Linux;
   toasts on Windows) while the window is not active.
+- Tray flyout: a click on the tray icon opens `views/flyout.rs` at the bottom right of the
+  primary display (a layer shell surface on Wayland, a pop-up elsewhere), with the newest alert,
+  a row per resource with a small chart, and Open Latexo and Pill. It closes when it loses the
+  focus or on a second click.
 - Tray icon: a StatusNotifierItem on Linux (`ksni` without tokio, on the zbus and async-io gpui
   already builds; GNOME needs its AppIndicator extension, and without a watcher the icon is only
   logged as missing) and `tray-icon` on Windows, driven by the main thread's message loop. Both
@@ -76,9 +80,6 @@ Expo/React Native conventions here.
 
 ## Pending decisions (ask before choosing)
 
-- **Tray flyout** of the design (a popup with small charts above the tray icon): not built. The
-  tray icon itself is (`views/tray.rs`, the `tray_icon` setting, on by default), with a native
-  menu: Open Latexo, the floating pill and Quit.
 - **Fan curves and fan control**: the design's profiles need a board driver; Latexo only reads.
 - **Estimated power** of the parts without a sensor (memory, disks, board): left out, nothing is
   estimated today.
@@ -146,7 +147,8 @@ Everything except `latexo-app` is testable with `cargo test`, with no window and
   `target/xwin`, copy `latexo.exe` to the `windows11` VM and run it there.
 - Debug hooks, read once at startup: `LATEXO_LOG=<level>`, `LATEXO_OPEN=<screen>` (`overview`,
   `processes`, `cpu`, `cores`, `gpu`, `memory`, `disk`, `network`, `temperatures`, `fans`,
-  `energy`, `alerts`, `settings`, `about`), `LATEXO_UPDATE_URL` (updater manifest).
+  `energy`, `alerts`, `settings`, `about`, or `flyout` for the tray flyout over the
+  Overview), `LATEXO_UPDATE_URL` (updater manifest).
 
 ## Working rules
 

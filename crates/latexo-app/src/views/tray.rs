@@ -1,5 +1,5 @@
 //! The tray icon of the design, with its menu: Open Latexo, the floating pill and Quit. A click
-//! on the icon opens Latexo. On Linux it is a StatusNotifierItem over D-Bus (`ksni`, on the zbus
+//! on the icon opens the flyout (`views/flyout.rs`). On Linux it is a StatusNotifierItem over D-Bus (`ksni`, on the zbus
 //! gpui already builds; KDE and most desktops show it, GNOME needs its AppIndicator extension), on
 //! Windows a notification area icon (`tray-icon`). Both send what the user picks through a
 //! channel the window waits on, so the tray does no work while nobody touches it.
@@ -18,6 +18,8 @@ const ICON_SIZE: u32 = 32;
 pub enum TrayCommand {
     /// Bring the window to the front.
     Open,
+    /// Open or close the flyout (a click on the icon).
+    Flyout,
     /// Turn the floating pill on or off.
     TogglePill,
     /// Quit Latexo.
@@ -91,7 +93,7 @@ mod platform {
         }
 
         fn activate(&mut self, _x: i32, _y: i32) {
-            self.send(TrayCommand::Open);
+            self.send(TrayCommand::Flyout);
         }
 
         fn menu(&self) -> Vec<MenuItem<Self>> {
@@ -211,7 +213,7 @@ mod platform {
                     ..
                 } = event
                 {
-                    let _ = sender.try_send(TrayCommand::Open);
+                    let _ = sender.try_send(TrayCommand::Flyout);
                 }
             }));
             Ok(Self {
@@ -261,6 +263,7 @@ impl AppView {
             while let Ok(command) = receiver.recv().await {
                 let handled = view.update_in(cx, |view, window, cx| match command {
                     TrayCommand::Open => window.activate_window(),
+                    TrayCommand::Flyout => view.toggle_flyout(window, cx),
                     TrayCommand::TogglePill => {
                         let on = !view.settings.floating_pill;
                         view.change(window, cx, |settings| settings.floating_pill = on);

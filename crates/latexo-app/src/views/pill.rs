@@ -215,10 +215,10 @@ impl AppView {
         .detach();
     }
 
-    /// Closes the pill with the main window.
+    /// Closes the pill and the tray flyout with the main window.
     pub fn close_pill(&mut self, cx: &mut App) {
-        if let Some(pill) = self.pill.take() {
-            let _ = pill.update(cx, |_, window, _| window.remove_window());
+        for window in [self.pill.take(), self.flyout.take()].into_iter().flatten() {
+            let _ = window.update(cx, |_, window, _| window.remove_window());
         }
     }
 }

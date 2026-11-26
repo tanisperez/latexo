@@ -76,7 +76,14 @@ temperature of each core as columns).
 A 40 px pill on `overlay` with a `border_strong` border: the logo, then CPU, GPU, RAM, power
 and temperature, each a muted label and a mono value. Anchored at the top center of the screen.
 
+## Tray
+
+The tray icon opens the flyout: 360 by 520 at the bottom right of the screen, a 44 px header
+with the logo and the Live badge, the newest alert, a 50 px row per resource (icon tile, name,
+value in mono, a 96 by 24 chart) and a 52 px footer with Open Latexo and Pill. Its right-click
+menu is the system's: Open Latexo, Floating pill, Quit.
+
 ## Not built yet
 
-The tray flyout (the tray icon has a native menu instead), and the fan curve and profiles (see `AGENTS.md`, Pending
+The fan curve and profiles (see `AGENTS.md`, Pending
 decisions).
