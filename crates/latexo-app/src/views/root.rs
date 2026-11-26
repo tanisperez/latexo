@@ -338,6 +338,14 @@ impl Render for AppView {
                 }),
             )
             .on_action(
+                cx.listener(|view, _: &crate::actions::SelectPrevious, _, cx| {
+                    view.move_selection(-1, cx);
+                }),
+            )
+            .on_action(cx.listener(|view, _: &crate::actions::SelectNext, _, cx| {
+                view.move_selection(1, cx);
+            }))
+            .on_action(
                 cx.listener(|view, _: &crate::actions::OpenSettings, _, cx| {
                     view.show(Screen::Settings, cx);
                 }),

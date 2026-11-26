@@ -69,8 +69,9 @@ Expo/React Native conventions here.
   send the menu choices through a channel the window waits on. Closing the window still quits.
 - Floating pill: `views/pill.rs`, a layer shell overlay on Wayland, an always-on-top pop-up
   dragged by its logo on Windows and X11.
-- Keyboard: `Ctrl+F` (search the processes), `Delete` (end the selected process, only on the
-  Processes screen), `Ctrl+,` (Settings), in `actions.rs`.
+- Keyboard: `Ctrl+F` (search the processes), `Up`/`Down` (move the selection) and `Delete` (end
+  the selected process), both only on the Processes screen, `Ctrl+,` (Settings), in
+  `actions.rs`.
 - Start with the session: an XDG autostart entry on Linux, an `HKCU\...\Run` value written with
   `reg.exe` on Windows (no registry crate, no `unsafe`).
 - Design: the prototype lives in a claude.ai Artifact (Design canvas),

@@ -153,6 +153,29 @@ impl AppView {
             .into_any_element()
     }
 
+    /// Moves the selection `step` rows in the table as shown (sorted, filtered, searched), and
+    /// scrolls to it. With nothing selected, the first row.
+    pub(crate) fn move_selection(&mut self, step: isize, cx: &mut Context<Self>) {
+        let Some(sample) = self.monitor.latest.clone() else {
+            return;
+        };
+        let rows = self.query.apply(&sample.processes);
+        if rows.is_empty() {
+            return;
+        }
+        let current = self
+            .selected_pid
+            .and_then(|pid| rows.iter().position(|process| process.pid == pid));
+        let index = match current {
+            Some(index) => index.saturating_add_signed(step).min(rows.len() - 1),
+            None => 0,
+        };
+        self.selected_pid = Some(rows[index].pid);
+        self.process_scroll
+            .scroll_to_item(index, ScrollStrategy::Nearest);
+        cx.notify();
+    }
+
     /// Asks before ending the selected process, as the design's dialog: what ends, how much the
     /// process uses, and whether its children end too (`with_tree` checks the box at first).
     /// Enter ends it, Escape closes.

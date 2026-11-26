@@ -11,6 +11,10 @@ actions!(
         EndProcess,
         /// Shows Settings (`Ctrl+,`).
         OpenSettings,
+        /// Selects the process above (`Up`, on the Processes screen).
+        SelectPrevious,
+        /// Selects the process below (`Down`, on the Processes screen).
+        SelectNext,
     ]
 );
 
@@ -23,5 +27,7 @@ pub fn bind_keys(cx: &mut App) {
         KeyBinding::new("ctrl-f", FocusSearch, None),
         KeyBinding::new("delete", EndProcess, Some(PROCESSES_CONTEXT)),
         KeyBinding::new("ctrl-,", OpenSettings, None),
+        KeyBinding::new("up", SelectPrevious, Some(PROCESSES_CONTEXT)),
+        KeyBinding::new("down", SelectNext, Some(PROCESSES_CONTEXT)),
     ]);
 }

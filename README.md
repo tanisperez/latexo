@@ -32,8 +32,8 @@ starts in a moment and stays light while it watches.
 - **Floating pill and tray**: CPU, GPU, memory, power and temperature always in sight above every
   window, and a tray icon whose flyout shows every resource at a glance.
 - **Settings inside the window**, in English, Spanish, Galician and Italian, light or dark.
-- **Keyboard**: `Ctrl+F` searches the processes, `Delete` ends the selected one, `Ctrl+,` opens
-  Settings.
+- **Keyboard**: `Ctrl+F` searches the processes, `Up` and `Down` move through them, `Delete`
+  ends the selected one, `Ctrl+,` opens Settings.
 
 ## Install
 
