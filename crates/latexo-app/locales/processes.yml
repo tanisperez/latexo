@@ -125,6 +125,21 @@ _version: 2
   es: "%{name} usa el %{cpu} de un hilo y %{memory} de memoria."
   gl: "%{name} usa o %{cpu} dun fío e %{memory} de memoria."
   it: "%{name} usa il %{cpu} di un thread e %{memory} di memoria."
+"processes.end_tree_option.one":
+  en: "End the process tree too (%{count} child process)"
+  es: "Finalizar también el árbol de procesos (%{count} proceso hijo)"
+  gl: "Finalizar tamén a árbore de procesos (%{count} proceso fillo)"
+  it: "Termina anche l'albero dei processi (%{count} processo figlio)"
+"processes.end_tree_option.other":
+  en: "End the process tree too (%{count} child processes)"
+  es: "Finalizar también el árbol de procesos (%{count} procesos hijos)"
+  gl: "Finalizar tamén a árbore de procesos (%{count} procesos fillos)"
+  it: "Termina anche l'albero dei processi (%{count} processi figli)"
+"processes.cancel":
+  en: "Cancel"
+  es: "Cancelar"
+  gl: "Cancelar"
+  it: "Annulla"
 "processes.end_confirm":
   en: "End"
   es: "Finalizar"

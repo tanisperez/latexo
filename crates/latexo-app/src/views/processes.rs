@@ -2,6 +2,7 @@
 //! filtered by owner and searched by name or PID, and ending the selected process after a
 //! confirmation.
 
+use std::cell::Cell;
 use std::rc::Rc;
 
 use gpui_kit::assets::IconName;
@@ -14,8 +15,9 @@ use latexo_core::Sample;
 use latexo_core::process::{ProcessColumn, ProcessFilter, ProcessInfo, tree};
 use rust_i18n::t;
 use telaio_ui::components::{
-    ConfirmDialog, DangerButton, MenuEntries, SegmentedControl, SegmentedItem, edit_menu_area,
-    no_input_menu, open_confirm_dialog,
+    DangerButton, InlineMessage, InlineMessageKind, MenuEntries, ModalPlacement, SecondaryButton,
+    SegmentedControl, SegmentedItem, edit_menu_area, framed_dialog, labelled_checkbox, modal_body,
+    modal_footer, modal_header_with_icon, modal_hints, no_input_menu,
 };
 
 use crate::state::format;
@@ -27,6 +29,9 @@ use crate::theme::{Palette, PaletteExt};
 
 use super::root::AppView;
 use super::widgets::palette_mono;
+
+/// Ends the process (and its tree when the box is checked), from the button or Enter.
+type EndHandler = Rc<dyn Fn(&mut Window, &mut App)>;
 
 /// The fixed widths of the columns after the name.
 const PID_WIDTH: f32 = 64.0;
@@ -148,7 +153,9 @@ impl AppView {
             .into_any_element()
     }
 
-    /// Asks before ending the selected process (and its children with `with_tree`).
+    /// Asks before ending the selected process, as the design's dialog: what ends, how much the
+    /// process uses, and whether its children end too (`with_tree` checks the box at first).
+    /// Enter ends it, Escape closes.
     pub(crate) fn confirm_end(
         &mut self,
         with_tree: bool,
@@ -161,66 +168,126 @@ impl AppView {
         let Some(sample) = self.monitor.latest.clone() else {
             return;
         };
-        let Some(process) = sample.processes.iter().find(|p| p.pid == pid) else {
+        let Some(process) = sample.processes.iter().find(|p| p.pid == pid).cloned() else {
             return;
         };
-        let pids = if with_tree {
-            tree(&sample.processes, pid)
-        } else {
-            vec![pid]
+        let children = tree(&sample.processes, pid);
+        let tree_box = Rc::new(Cell::new(with_tree));
+        let weak = cx.weak_entity();
+        let end: EndHandler = {
+            let tree_box = tree_box.clone();
+            let children = children.clone();
+            Rc::new(move |window, cx| {
+                let pids = if tree_box.get() {
+                    children.clone()
+                } else {
+                    vec![pid]
+                };
+                let result = latexo_sensors::end_processes(&pids);
+                let _ = weak.update(cx, |view, cx| {
+                    view.selected_pid = None;
+                    if let Err(error) = result {
+                        let message = match error {
+                            latexo_sensors::KillError::NotFound => t!("processes.end_gone"),
+                            latexo_sensors::KillError::Denied => t!("processes.end_denied"),
+                        };
+                        window.push_notification(
+                            gpui_kit::component::notification::Notification::error(
+                                message.into_owned(),
+                            ),
+                            cx,
+                        );
+                    }
+                    view.focus_window(window, cx);
+                    cx.notify();
+                });
+            })
         };
-        let title = if with_tree {
-            t!("processes.end_tree_title", name = process.name.clone())
-        } else {
-            t!("processes.end_title", name = process.name.clone())
-        };
-        let mut text = t!("processes.end_text", pid = pid).into_owned();
-        if with_tree && pids.len() > 1 {
-            text.push_str("\n\n");
-            text.push_str(&crate::state::locale::plural(
-                "processes.end_tree_count",
-                pids.len() - 1,
-            ));
-        }
-        text.push_str("\n\n");
-        text.push_str(&t!(
+        let title: SharedString = t!("processes.end_title", name = process.name.clone())
+            .into_owned()
+            .into();
+        let text: SharedString = t!("processes.end_text", pid = pid).into_owned().into();
+        let usage: SharedString = t!(
             "processes.end_usage",
             name = process.name.clone(),
             cpu = format::percent_value(f64::from(process.cpu_percent), 1),
             memory = format::bytes(process.memory)
-        ));
-        let weak = cx.weak_entity();
-        open_confirm_dialog(
-            window,
-            cx,
-            ConfirmDialog {
-                title: title.into_owned().into(),
-                text: text.into(),
-                confirm_label: t!("processes.end_confirm").into_owned().into(),
-                destructive: true,
-                show_cancel: true,
-                icon: None,
-                on_confirm: Rc::new(move |window, cx| {
-                    let result = latexo_sensors::end_processes(&pids);
-                    let _ = weak.update(cx, |view, cx| {
-                        view.selected_pid = None;
-                        if let Err(error) = result {
-                            let message = match error {
-                                latexo_sensors::KillError::NotFound => t!("processes.end_gone"),
-                                latexo_sensors::KillError::Denied => t!("processes.end_denied"),
-                            };
-                            window.push_notification(
-                                gpui_kit::component::notification::Notification::error(
-                                    message.into_owned(),
+        )
+        .into_owned()
+        .into();
+        let child_count = children.len().saturating_sub(1);
+        window.open_dialog(cx, move |dialog, window, _| {
+            let on_ok = end.clone();
+            let dialog = dialog.overlay_closable(false).on_ok(move |_, window, cx| {
+                on_ok(window, cx);
+                true
+            });
+            let (end, tree_box) = (end.clone(), tree_box.clone());
+            let (title, text, usage) = (title.clone(), text.clone(), usage.clone());
+            framed_dialog(
+                dialog,
+                telaio_ui::metrics::MODAL_WIDTH_DEFAULT,
+                None,
+                ModalPlacement::DEFAULT,
+                window,
+                move |_, cx| {
+                    let palette = cx.palette();
+                    let checked = tree_box.get();
+                    let toggle = tree_box.clone();
+                    let mut body = modal_body()
+                        .child(div().text_color(palette.fg_muted).child(text.clone()))
+                        .child(InlineMessage::new(InlineMessageKind::Info, usage.clone()));
+                    if child_count > 0 {
+                        body = body.child(
+                            labelled_checkbox(
+                                "end-tree",
+                                checked,
+                                crate::state::locale::plural(
+                                    "processes.end_tree_option",
+                                    child_count,
                                 ),
-                                cx,
-                            );
-                        }
-                        cx.notify();
-                    });
-                }),
-            },
-        );
+                                &palette,
+                            )
+                            .on_change(move |on, window, _| {
+                                toggle.set(*on);
+                                window.refresh();
+                            }),
+                        );
+                    }
+                    let end = end.clone();
+                    v_flex()
+                        .child(modal_header_with_icon(
+                            IconName::TriangleAlert,
+                            palette.danger,
+                            title.clone(),
+                            cx,
+                        ))
+                        .child(body)
+                        .child(modal_hints(
+                            [
+                                ("Esc", t!("processes.cancel").into_owned()),
+                                ("\u{21b5}", t!("processes.end_confirm").into_owned()),
+                            ],
+                            cx,
+                        ))
+                        .child(
+                            modal_footer(cx)
+                                .child(
+                                    SecondaryButton::new("end-cancel", t!("processes.cancel"))
+                                        .on_click(|_, window, cx| window.close_dialog(cx)),
+                                )
+                                .child(
+                                    DangerButton::new("end-confirm", t!("processes.end_confirm"))
+                                        .on_click(move |_, window, cx| {
+                                            end(window, cx);
+                                            window.close_dialog(cx);
+                                        }),
+                                ),
+                        )
+                        .into_any_element()
+                },
+            )
+        });
     }
 
     pub(crate) fn render_processes(
