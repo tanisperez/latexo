@@ -78,8 +78,10 @@ mod platform {
         fn icon_pixmap(&self) -> Vec<Icon> {
             // ksni wants ARGB in network byte order.
             let data = ICON_RGBA
-                .chunks_exact(4)
-                .flat_map(|pixel| [pixel[3], pixel[0], pixel[1], pixel[2]])
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .flat_map(|[r, g, b, a]| [*a, *r, *g, *b])
                 .collect();
             vec![Icon {
                 width: ICON_SIZE as i32,
