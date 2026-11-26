@@ -19,6 +19,8 @@ starts in a moment and stays light while it watches.
 </picture>
 
 - **Overview**: every resource at a glance, the busiest processes and the power used today.
+- **GPU**: usage, video memory, the processes that use it and, on Linux, each engine (3D, video,
+  copy).
 - **Cores**: usage, temperature and clock of each core as bars, a heat map over time, a small
   chart per core or a map of the processor.
 - **Processes**: sort by any column, filter yours or the system's, search by name or PID, end
@@ -27,7 +29,8 @@ starts in a moment and stays light while it watches.
   averages kept on this computer for a day or a week).
 - **Alerts**: rules on temperatures, usage, disks, power and fans, with how long they must last.
 - **Energy**: the measured power added up into kWh today and this month, with its cost.
-- **Floating pill**: CPU, GPU, memory, power and temperature always in sight, above every window.
+- **Floating pill and tray**: CPU, GPU, memory, power and temperature always in sight above every
+  window, and a tray icon whose flyout shows every resource at a glance.
 - **Settings inside the window**, in English, Spanish, Galician and Italian, light or dark.
 - **Keyboard**: `Ctrl+F` searches the processes, `Delete` ends the selected one, `Ctrl+,` opens
   Settings.
