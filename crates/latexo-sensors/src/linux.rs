@@ -227,15 +227,18 @@ pub fn parse_fdinfo(text: &str) -> Option<DrmClient> {
 /// looks at every file descriptor of every process.
 #[derive(Debug, Default)]
 pub struct GpuEngines {
-    last: Option<(Instant, HashMap<(u64, String), u64>)>,
+    last: Option<(Instant, EngineTimes)>,
 }
+
+/// Busy nanoseconds by DRM client and engine.
+type EngineTimes = HashMap<(u64, String), u64>;
 
 impl GpuEngines {
     /// The share of each engine since the previous call, 0 to 1, in a stable order. Empty the
     /// first time and when no client can be read.
     pub fn read(&mut self, proc: &Path) -> Vec<(String, f32)> {
         let now = Instant::now();
-        let mut busy: HashMap<(u64, String), u64> = HashMap::new();
+        let mut busy: EngineTimes = HashMap::new();
         let mut capacity: HashMap<String, u32> = HashMap::new();
         for client in drm_clients(proc) {
             for (engine, units) in client.capacity {
