@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help run build release dist install uninstall check lint lint-fix format format-check test clean docs site
+.PHONY: help run build release dist install uninstall check lint lint-fix format format-check test clean
 
 help:
 	@echo "Usage: make [target]"
@@ -18,8 +18,6 @@ help:
 	@echo "  format-check  Check formatting without modifying files"
 	@echo "  test          Run all tests"
 	@echo "  clean         Remove build artifacts"
-	@echo "  docs          Build the user documentation (site/docs-src into site/docs)"
-	@echo "  site          Build the documentation and serve the website on http://localhost:8000"
 
 run:
 	cargo run
@@ -87,12 +85,3 @@ test:
 
 clean:
 	cargo clean
-
-PYTHON ?= python3
-
-# site/docs is generated, never edited by hand.
-docs:
-	$(PYTHON) site/docs-src/build.py
-
-site: docs
-	$(PYTHON) -m http.server -d site 8000
