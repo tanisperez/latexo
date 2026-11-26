@@ -24,9 +24,9 @@ use crate::state::monitor::{AlertEvent, Monitor};
 use crate::state::nav::Screen;
 use crate::state::settings::{ChartStyle, Settings, ThemeChoice, save_settings};
 use crate::theme::metrics::{
-    CONTENT_PADDING_X, CONTENT_PADDING_Y, GAP, NAV_ROW_HEIGHT, RADIUS_MD, SIDEBAR_LOGO_SIZE,
-    SIDEBAR_PADDING, SIDEBAR_WIDTH, TEXT_GROUP, TEXT_SM, TITLE_BAR_HEIGHT, TITLE_BUTTON_SIZE,
-    TITLE_TEXT_SIZE,
+    CONTENT_PADDING_X, CONTENT_PADDING_Y, GAP, HEADER_TITLE_MIN_WIDTH, NAV_ROW_HEIGHT, RADIUS_MD,
+    SIDEBAR_LOGO_SIZE, SIDEBAR_PADDING, SIDEBAR_WIDTH, TEXT_GROUP, TEXT_SM, TITLE_BAR_HEIGHT,
+    TITLE_BUTTON_SIZE, TITLE_TEXT_SIZE,
 };
 use crate::theme::{Palette, PaletteExt};
 
@@ -590,18 +590,30 @@ impl AppView {
             Screen::Processes => self.process_controls(palette, window, cx),
             Screen::Cores => h_flex()
                 .gap(px(10.0))
+                .flex_wrap()
                 .child(self.cores_view_control(cx))
                 .child(self.range_control(cx))
                 .into_any_element(),
             screen if screen.has_charts() => h_flex()
                 .gap(px(10.0))
+                .flex_wrap()
                 .child(self.chart_style_control(cx))
                 .child(self.range_control(cx))
+                .child(
+                    telaio_ui::components::SecondaryButton::new(
+                        "header-export",
+                        t!("settings.export"),
+                    )
+                    .icon(Icon::new(IconName::Download))
+                    .on_click(cx.listener(|view, _, window, cx| view.export_history(window, cx))),
+                )
                 .into_any_element(),
             _ => div().into_any_element(),
         };
+        // The controls go under the title when both do not fit side by side.
         h_flex()
             .flex_none()
+            .flex_wrap()
             .items_start()
             .justify_between()
             .gap(px(GAP))
@@ -610,7 +622,8 @@ impl AppView {
             .pb(px(GAP))
             .child(
                 v_flex()
-                    .min_w_0()
+                    .flex_1()
+                    .min_w(px(HEADER_TITLE_MIN_WIDTH))
                     .child(
                         div()
                             .text_size(px(TITLE_TEXT_SIZE))
@@ -627,7 +640,7 @@ impl AppView {
                             .child(subtitle),
                     ),
             )
-            .child(div().flex_none().child(controls))
+            .child(div().flex_none().max_w_full().child(controls))
     }
 
     /// The chart style selector of the header.

@@ -19,7 +19,7 @@ use crate::state::settings::{
     TemperatureChoice, ThemeChoice,
 };
 use crate::theme::Palette;
-use crate::theme::metrics::{GAP, SETTINGS_ROW_HEIGHT, TEXT_ROW};
+use crate::theme::metrics::{GAP, SETTINGS_LABEL_MIN_WIDTH, SETTINGS_ROW_HEIGHT, TEXT_ROW};
 
 use super::root::{AppView, chart_style_label};
 use super::widgets::{badge, card, card_title};
@@ -32,7 +32,9 @@ fn row(
     first: bool,
     palette: &Palette,
 ) -> AnyElement {
+    // A control wider than the room next to its label goes under it, at the right.
     h_flex()
+        .flex_wrap()
         .min_h(px(SETTINGS_ROW_HEIGHT))
         .py(px(6.0))
         .items_center()
@@ -41,7 +43,7 @@ fn row(
         .child(
             v_flex()
                 .flex_1()
-                .min_w_0()
+                .min_w(px(SETTINGS_LABEL_MIN_WIDTH))
                 .child(div().text_size(px(TEXT_ROW)).child(label.into()))
                 .when_some(description, |column, text| {
                     column.child(
@@ -52,7 +54,7 @@ fn row(
                     )
                 }),
         )
-        .child(div().flex_none().child(control))
+        .child(div().flex_none().ml_auto().child(control))
         .into_any_element()
 }
 
@@ -504,9 +506,15 @@ impl AppView {
         self.set_pill(on, window, cx);
     }
 
-    /// Asks where to save the history as CSV and writes it.
-    fn export_history(&mut self, window: &mut Window, cx: &mut Context<Self>) {
-        let csv = history_csv(&self.monitor.history);
+    /// Asks where to save the history of the chart range (the samples, or the minute averages
+    /// for the long ranges) as CSV and writes it.
+    pub(crate) fn export_history(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let history = if self.range().is_long() {
+            &self.monitor.minutes
+        } else {
+            &self.monitor.history
+        };
+        let csv = history_csv(history);
         let directory = std::env::home_dir().unwrap_or_default();
         let chosen = cx.prompt_for_new_path(&directory, Some("latexo-history.csv"));
         cx.spawn_in(window, async move |view, cx| {

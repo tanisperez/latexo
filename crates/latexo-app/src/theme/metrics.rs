@@ -83,3 +83,7 @@ pub const DOT_SIZE: f32 = 6.0;
 pub const MIN_WINDOW: (f32, f32) = (1024.0, 680.0);
 /// Height of the floating pill.
 pub const PILL_HEIGHT: f32 = 40.0;
+/// Narrowest the title of a screen gets before its controls go under it.
+pub const HEADER_TITLE_MIN_WIDTH: f32 = 240.0;
+/// Narrowest the label of a settings row gets before its control goes under it.
+pub const SETTINGS_LABEL_MIN_WIDTH: f32 = 120.0;
