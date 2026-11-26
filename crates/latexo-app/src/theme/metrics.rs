@@ -83,5 +83,3 @@ pub const DOT_SIZE: f32 = 6.0;
 pub const MIN_WINDOW: (f32, f32) = (1024.0, 680.0);
 /// Height of the floating pill.
 pub const PILL_HEIGHT: f32 = 40.0;
-/// Width of the floating pill's window.
-pub const PILL_WIDTH: f32 = 560.0;

@@ -11,7 +11,22 @@ use rust_i18n::t;
 
 use crate::state::format;
 use crate::theme::PaletteExt;
-use crate::theme::metrics::{PILL_HEIGHT, PILL_WIDTH, TEXT_SM};
+use crate::theme::metrics::{PILL_HEIGHT, TEXT_SM};
+
+/// Width of one item of the pill: its label and its value, in fixed widths so the pill only
+/// changes size when an item appears or goes.
+const ITEM_LABEL_WIDTH: f32 = 44.0;
+const ITEM_VALUE_WIDTH: f32 = 42.0;
+/// Space between the items, and the padding at the ends.
+const ITEM_GAP: f32 = 12.0;
+const PADDING_X: f32 = 14.0;
+/// Side of the logo.
+const LOGO: f32 = 20.0;
+
+/// The width of a pill with `items` items.
+pub fn pill_width(items: usize) -> f32 {
+    2.0 * PADDING_X + LOGO + items as f32 * (ITEM_GAP + ITEM_LABEL_WIDTH + ITEM_VALUE_WIDTH)
+}
 
 use super::logo::logo;
 use super::root::AppView;
@@ -22,16 +37,37 @@ pub struct PillView {
     app: Entity<AppView>,
     main: AnyWindowHandle,
     _observe: Subscription,
+    shown_items: usize,
+    /// Round ends and its own border: only on a layer shell surface. A pop-up window on Windows
+    /// gets a square border from the system, so the pill fills it square.
+    rounded: bool,
 }
 
 impl PillView {
-    fn new(app: Entity<AppView>, main: AnyWindowHandle, cx: &mut Context<Self>) -> Self {
+    fn new(
+        app: Entity<AppView>,
+        main: AnyWindowHandle,
+        rounded: bool,
+        cx: &mut Context<Self>,
+    ) -> Self {
         let observe = cx.observe(&app, |_, _, cx| cx.notify());
         Self {
             app,
             main,
             _observe: observe,
+            shown_items: 0,
+            rounded,
         }
+    }
+
+    /// How many items the pill shows for the newest sample of `view` (three before the first).
+    fn count_items(view: &AppView) -> usize {
+        let Some(sample) = view.monitor.latest.as_deref() else {
+            return 3;
+        };
+        2 + usize::from(sample.gpus.first().is_some_and(|gpu| gpu.usage.is_some()))
+            + usize::from(sample.power.measured_total().is_some())
+            + usize::from(sample.cpu_temperature().is_some())
     }
 
     /// The label and value of each item, in the order of the design.
@@ -66,48 +102,60 @@ impl PillView {
 }
 
 impl Render for PillView {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let palette = cx.palette();
         let items = self.items(cx);
+        // An item that appears or goes (the GPU, the power) resizes the window to fit.
+        if !items.is_empty() && items.len() != self.shown_items {
+            self.shown_items = items.len();
+            window.resize(size(px(pill_width(items.len())), px(PILL_HEIGHT)));
+        }
         let main = self.main;
-        div()
+        h_flex()
             .id("pill")
             .size_full()
-            .flex()
+            .px(px(PADDING_X))
+            .gap(px(ITEM_GAP))
             .items_center()
-            .justify_center()
-            .child(
-                h_flex()
-                    .h(px(PILL_HEIGHT))
-                    .px(px(14.0))
-                    .gap(px(14.0))
-                    .items_center()
-                    .rounded(px(PILL_HEIGHT / 2.0))
-                    .bg(palette.overlay)
+            .bg(palette.overlay)
+            .when(self.rounded, |pill| {
+                pill.rounded(px(PILL_HEIGHT / 2.0))
                     .border_1()
                     .border_color(palette.border_strong)
-                    .text_color(palette.fg)
-                    .child(logo(20.0))
-                    .children(items.into_iter().map(|(label, value)| {
-                        h_flex()
-                            .items_baseline()
-                            .gap(px(6.0))
-                            .whitespace_nowrap()
-                            .child(
-                                div()
-                                    .text_size(px(11.5))
-                                    .text_color(palette.fg_muted)
-                                    .child(label),
-                            )
-                            .child(
-                                div()
-                                    .font_family(palette_mono())
-                                    .text_size(px(TEXT_SM + 0.5))
-                                    .font_weight(FontWeight::MEDIUM)
-                                    .child(value),
-                            )
-                    })),
+            })
+            .text_color(palette.fg)
+            // The handle that drags a pop-up on Windows, where the system moves a window by the
+            // areas it hit tests as a caption.
+            .child(
+                div()
+                    .h_full()
+                    .flex()
+                    .items_center()
+                    .window_control_area(WindowControlArea::Drag)
+                    .child(logo(LOGO)),
             )
+            .children(items.into_iter().map(|(label, value)| {
+                h_flex()
+                    .items_baseline()
+                    .whitespace_nowrap()
+                    .child(
+                        div()
+                            .w(px(ITEM_LABEL_WIDTH))
+                            .text_right()
+                            .pr(px(6.0))
+                            .text_size(px(11.5))
+                            .text_color(palette.fg_muted)
+                            .child(label),
+                    )
+                    .child(
+                        div()
+                            .w(px(ITEM_VALUE_WIDTH))
+                            .font_family(palette_mono())
+                            .text_size(px(TEXT_SM + 0.5))
+                            .font_weight(FontWeight::MEDIUM)
+                            .child(value),
+                    )
+            }))
             .on_mouse_down(MouseButton::Left, move |event, window, cx| {
                 if event.click_count >= 2 {
                     let _ = main.update(cx, |_, window, _| window.activate_window());
@@ -136,13 +184,15 @@ impl AppView {
         }
         let app = cx.entity();
         let main = window.window_handle();
-        let options = pill_options(cx);
+        let items = PillView::count_items(self);
+        let options = pill_options(items, cx);
         let theme = self.settings.theme;
+        let rounded = is_layer_shell(&options.kind);
         cx.spawn_in(window, async move |view, cx| {
             let opened = cx.update(|_, cx| {
                 cx.open_window(options, move |window, cx| {
                     telaio_ui::ThemeChoice::from(theme).apply(Some(window), cx);
-                    cx.new(|cx| PillView::new(app, main, cx))
+                    cx.new(|cx| PillView::new(app, main, rounded, cx))
                 })
             });
             let _ = view.update_in(cx, |view, window, cx| match opened {
@@ -175,8 +225,8 @@ impl AppView {
 
 /// Where and how the pill opens: a layer shell surface on Wayland, a pop-up at the top center of
 /// the primary display elsewhere.
-fn pill_options(cx: &App) -> WindowOptions {
-    let size = size(px(PILL_WIDTH), px(PILL_HEIGHT + 16.0));
+fn pill_options(items: usize, cx: &App) -> WindowOptions {
+    let size = size(px(pill_width(items)), px(PILL_HEIGHT));
     let origin = cx
         .primary_display()
         .map(|display| {
@@ -218,6 +268,16 @@ fn pill_kind(cx: &App) -> WindowKind {
     } else {
         WindowKind::PopUp
     }
+}
+
+#[cfg(target_os = "linux")]
+fn is_layer_shell(kind: &WindowKind) -> bool {
+    matches!(kind, WindowKind::LayerShell(_))
+}
+
+#[cfg(not(target_os = "linux"))]
+fn is_layer_shell(_kind: &WindowKind) -> bool {
+    false
 }
 
 #[cfg(not(target_os = "linux"))]

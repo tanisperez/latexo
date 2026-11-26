@@ -134,7 +134,9 @@ impl AppView {
                         cx.notify();
                     }
                     Message::Sample(sample, capabilities) => {
-                        if let Some(capabilities) = capabilities {
+                        if let Some(capabilities) = capabilities
+                            && view.monitor.capabilities != Some(capabilities)
+                        {
                             log::info!("sensors: {capabilities:?}");
                             view.monitor.capabilities = Some(capabilities);
                         }
@@ -818,6 +820,9 @@ pub fn range_label(range: Range) -> String {
     .into_owned()
 }
 
+/// How often the sampling thread checks again what the machine can read, in samples.
+const CAPABILITIES_EVERY: u64 = 30;
+
 /// What the sampling thread sends.
 enum Message {
     /// The machine, once, when the sampler opens.
@@ -851,12 +856,15 @@ fn sample_loop(
     {
         return;
     }
-    let mut first = true;
+    let mut count: u64 = 0;
     loop {
         let started = Instant::now();
         let sample = sampler.sample_with(wants_processes.load(Ordering::Relaxed));
-        let capabilities = first.then(|| sampler.capabilities(&sample));
-        first = false;
+        // Again now and then: some readings only show up later (the GPU usage of its processes).
+        let capabilities = count
+            .is_multiple_of(CAPABILITIES_EVERY)
+            .then(|| sampler.capabilities(&sample));
+        count += 1;
         if sender
             .send_blocking(Message::Sample(Box::new(sample), capabilities))
             .is_err()
