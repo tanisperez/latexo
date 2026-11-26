@@ -269,11 +269,8 @@ impl AppView {
                         view.change(window, cx, |settings| settings.floating_pill = on);
                         view.set_pill(on, window, cx);
                     }
-                    TrayCommand::Quit => {
-                        view.on_close();
-                        view.close_pill(cx);
-                        cx.quit();
-                    }
+                    // Closing the main window saves everything (its size included) and quits.
+                    TrayCommand::Quit => window.remove_window(),
                 });
                 if handled.is_err() {
                     break;
