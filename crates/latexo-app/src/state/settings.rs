@@ -290,6 +290,8 @@ pub struct Settings {
     pub currency: String,
     /// Start Latexo when the user logs in.
     pub start_at_login: bool,
+    /// Show the floating pill, always above the other windows.
+    pub floating_pill: bool,
     /// Look for a new version at startup (only in builds with the updater).
     pub check_updates: bool,
     /// The log level.
@@ -313,6 +315,7 @@ impl Default for Settings {
             energy_price: 0.16,
             currency: "€".to_string(),
             start_at_login: false,
+            floating_pill: false,
             check_updates: true,
             log_level: LogLevel::default(),
             alerts: default_rules(),
@@ -468,6 +471,9 @@ fn parse_settings(content: &str) -> Settings {
     if let Some(value) = flag("start_at_login") {
         settings.start_at_login = value;
     }
+    if let Some(value) = flag("floating_pill") {
+        settings.floating_pill = value;
+    }
     if let Some(value) = flag("check_updates") {
         settings.check_updates = value;
     }
@@ -521,6 +527,7 @@ mod tests {
             energy_price: 0.25,
             currency: "$".to_string(),
             start_at_login: true,
+            floating_pill: true,
             check_updates: false,
             log_level: LogLevel::Debug,
             alerts: default_rules().into_iter().take(2).collect(),

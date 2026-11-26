@@ -68,8 +68,11 @@ Expo/React Native conventions here.
 
 ## Pending decisions (ask before choosing)
 
-- **Tray icon and the floating pill** of the design: gpui has no tray support. Needs a tray crate
-  (and its own event loop on Linux) or a small always-on-top window for the pill. Not built.
+- **Tray icon** of the design: gpui has no tray support. Needs a tray crate (and its own event
+  loop on Linux). Not built. The **floating pill** is built (`views/pill.rs`, the
+  `floating_pill` setting): a layer shell overlay on Wayland (not on GNOME, which has no layer
+  shell; the setting then turns back off with a notification) and an always-on-top pop-up on
+  Windows and X11.
 - **Fan curves and fan control**: the design's profiles need a board driver; Latexo only reads.
 - **Estimated power** of the parts without a sensor (memory, disks, board): left out, nothing is
   estimated today.

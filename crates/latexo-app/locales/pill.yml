@@ -1,0 +1,17 @@
+# The pill area. Glossary and rules: docs/i18n.md
+_version: 2
+"pill.memory":
+  en: "RAM"
+  es: "RAM"
+  gl: "RAM"
+  it: "RAM"
+"pill.power":
+  en: "Power"
+  es: "Consumo"
+  gl: "Consumo"
+  it: "Potenza"
+"pill.temperature":
+  en: "Temp."
+  es: "Temp."
+  gl: "Temp."
+  it: "Temp."

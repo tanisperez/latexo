@@ -53,6 +53,8 @@ pub struct AppView {
     pub update: crate::state::update::UpdateState,
     /// How this copy was installed, for the updater.
     pub update_env: crate::state::update::UpdateEnv,
+    /// The floating pill's window, while it is open.
+    pub pill: Option<AnyWindowHandle>,
     content_scroll: ScrollHandle,
     interval_ms: Arc<AtomicU64>,
     wants_processes: Arc<AtomicBool>,
@@ -88,6 +90,7 @@ impl AppView {
             process_scroll: UniformListScrollHandle::new(),
             update: crate::state::update::UpdateState::default(),
             update_env: crate::state::update::UpdateEnv::detect(),
+            pill: None,
             content_scroll: ScrollHandle::new(),
             interval_ms: Arc::new(AtomicU64::new(interval_ms(&settings_interval))),
             wants_processes: Arc::new(AtomicBool::new(true)),
@@ -98,6 +101,9 @@ impl AppView {
             .store(view.screen.shows_processes(), Ordering::Relaxed);
         view._sampling = view.start_sampling(window, cx);
         view.schedule_startup_update_check(cx);
+        if view.settings.floating_pill {
+            view.set_pill(true, window, cx);
+        }
         view
     }
 

@@ -8,6 +8,7 @@ mod cores;
 mod gpu;
 mod logo;
 mod overview;
+mod pill;
 mod processes;
 mod resources;
 mod root;

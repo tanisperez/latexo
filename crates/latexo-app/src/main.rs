@@ -90,11 +90,18 @@ fn main() -> ExitCode {
                     weak.upgrade()
                         .is_some_and(|view| view.read(cx).follows_system())
                 });
+                // The main window closing ends Latexo, the floating pill with it.
                 let closing = view.downgrade();
-                cx.on_window_closed(move |cx, _| {
+                let main_id = window.window_handle().window_id();
+                cx.on_window_closed(move |cx, closed| {
+                    if closed != main_id {
+                        return;
+                    }
                     if let Some(view) = closing.upgrade() {
                         view.read(cx).on_close();
+                        view.update(cx, |view, cx| view.close_pill(cx));
                     }
+                    cx.quit();
                 })
                 .detach();
                 cx.new(|cx| Root::new(view, window, cx))

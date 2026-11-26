@@ -284,19 +284,41 @@ impl AppView {
                 }),
             palette,
         );
+        let pill = switch_halo(
+            "settings-pill-halo",
+            Switch::new("settings-pill")
+                .checked(settings.floating_pill)
+                .on_click({
+                    let weak = weak.clone();
+                    move |checked, window, cx| {
+                        let on = *checked;
+                        let _ = weak.update(cx, |view, cx| view.set_floating_pill(on, window, cx));
+                    }
+                }),
+            palette,
+        );
         let startup = section(
             t!("settings.startup").into_owned(),
-            vec![row(
-                if cfg!(windows) {
-                    t!("settings.start_with_windows")
-                } else {
-                    t!("settings.start_with_session")
-                },
-                None,
-                login,
-                true,
-                palette,
-            )],
+            vec![
+                row(
+                    if cfg!(windows) {
+                        t!("settings.start_with_windows")
+                    } else {
+                        t!("settings.start_with_session")
+                    },
+                    None,
+                    login,
+                    true,
+                    palette,
+                ),
+                row(
+                    t!("settings.floating_pill"),
+                    Some(t!("settings.floating_pill_description").into_owned()),
+                    pill,
+                    false,
+                    palette,
+                ),
+            ],
             palette,
         );
 
@@ -453,6 +475,11 @@ impl AppView {
                 cx.notify();
             }
         }
+    }
+
+    fn set_floating_pill(&mut self, on: bool, window: &mut Window, cx: &mut Context<Self>) {
+        self.change(window, cx, |settings| settings.floating_pill = on);
+        self.set_pill(on, window, cx);
     }
 
     /// Asks where to save the history as CSV and writes it.

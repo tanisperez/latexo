@@ -71,7 +71,12 @@ Heat map (usage over time in seven steps of the accent), Charts (a small chart p
 temperature badge) and Processor (tiles tinted by usage, a warning ring at 80 °C, and the
 temperature of each core as columns).
 
+## Floating pill
+
+A 40 px pill on `overlay` with a `border_strong` border: the logo, then CPU, GPU, RAM, power
+and temperature, each a muted label and a mono value. Anchored at the top center of the screen.
+
 ## Not built yet
 
-The tray flyout and the floating pill, and the fan curve and profiles (see `AGENTS.md`, Pending
+The tray flyout, and the fan curve and profiles (see `AGENTS.md`, Pending
 decisions).

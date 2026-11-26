@@ -105,6 +105,21 @@ _version: 2
   es: "Iniciar al entrar en la sesión"
   gl: "Iniciar ao entrar na sesión"
   it: "Avvia all'accesso"
+"settings.floating_pill":
+  en: "Floating pill"
+  es: "Pastilla flotante"
+  gl: "Pastilla flotante"
+  it: "Pillola fluttuante"
+"settings.floating_pill_description":
+  en: "Always visible above the windows; double click opens Latexo"
+  es: "Siempre visible sobre las ventanas; doble clic abre Latexo"
+  gl: "Sempre visible sobre as xanelas; dobre clic abre Latexo"
+  it: "Sempre visibile sopra le finestre; doppio clic apre Latexo"
+"settings.pill_failed":
+  en: "This desktop cannot show the floating pill: %{error}"
+  es: "Este escritorio no puede mostrar la pastilla flotante: %{error}"
+  gl: "Este escritorio non pode amosar a pastilla flotante: %{error}"
+  it: "Questo desktop non può mostrare la pillola fluttuante: %{error}"
 "settings.startup_failed":
   en: "Could not change the start: %{error}"
   es: "No se ha podido cambiar el arranque: %{error}"
