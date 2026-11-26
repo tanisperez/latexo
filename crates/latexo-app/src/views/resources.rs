@@ -605,10 +605,7 @@ impl AppView {
             )
         });
         let cpu = sample.cpu_temperature();
-        let max = self.monitor.history.max_in(
-            &SeriesKey::CpuTemperature,
-            self.range().min(latexo_core::Range::OneHour),
-        );
+        let max = self.max_in_range(&SeriesKey::CpuTemperature);
         let mut stats = Vec::new();
         if let Some(cpu) = cpu {
             stats.push((
@@ -786,11 +783,7 @@ impl AppView {
                 format!("{} {currency}/kWh", format::decimal(price, 2)),
             ),
         ];
-        if let Some(max) = self
-            .monitor
-            .history
-            .max_in(&SeriesKey::PowerTotal, self.range())
-        {
+        if let Some(max) = self.max_in_range(&SeriesKey::PowerTotal) {
             stats.insert(
                 1,
                 (

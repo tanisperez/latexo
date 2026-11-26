@@ -46,6 +46,16 @@ impl AppView {
         }
     }
 
+    /// The highest value of `key` in the chart range, from the history the chart reads.
+    pub fn max_in_range(&self, key: &SeriesKey) -> Option<f32> {
+        let range = self.range();
+        if range.is_long() {
+            self.monitor.minutes.max_in(key, range)
+        } else {
+            self.monitor.history.max_in(key, range)
+        }
+    }
+
     /// A chart of one series from 0 to `max`.
     pub fn chart(&self, key: &SeriesKey, max: f32, height: f32, palette: &Palette) -> Chart {
         self.chart_of(self.window(key), max, height, palette)
